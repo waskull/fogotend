@@ -1,0 +1,159 @@
+@if (!data) {
+<form (ngSubmit)="sendData()" [formGroup]="dataForm">
+
+
+        <div class="row">
+        <div class="mb-3 form-floating form-group col">
+            <label for="type" class="col-form-label py-1  px-4">Tipo de recomendación:</label>
+            <select class="form-select" aria-label="Tipo de reclamo" name="type" id="type" formControlName="type">
+                <option selected value={{type.CLAIM}}>{{type.CLAIM}}</option>
+                <option value={{type.COMPLAINT}}>{{type.COMPLAINT}}</option>
+                <option value={{type.SUGGESTION}}>{{type.SUGGESTION}}</option>
+                <option value={{type.OTHER}}>{{type.OTHER}}</option>
+            </select>
+            @if (dataForm.get('type')?.touched && dataForm.get('type')?.errors?.['required']) {
+            <div class="alert mt-3 alert-danger">El tipo de reclamo es requerido.</div>
+            }
+
+            @if (dataForm.get('type')?.touched && dataForm.get('type')?.errors?.['minlength']) {
+            <div class="alert mt-3 alert-danger">El tipo de reclamo debe de tener un mínimo de
+                {{dataForm.get('type')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+            }
+
+        </div>
+
+
+        <div class="row">
+            <div class="mb-3 form-floating form-group col">
+                <label for="description" class="col-form-label py-1  px-4">Descripción:</label>
+                <textarea name="description" class="form-control" formControlName="description"
+                    id="description"></textarea>
+                @if (dataForm.get('desc')?.touched && dataForm.get('desc')?.errors?.['required']) {
+                <div class="alert mt-3 alert-danger">La descripción es requerida.</div>
+                }
+
+                @if (dataForm.get('desc')?.touched && dataForm.get('desc')?.errors?.['minlength']) {
+                <div class="alert mt-3 alert-danger">La descripción debe de tener mínimo
+                    {{dataForm.get('desc')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+                }
+
+            </div>
+        </div>
+    </div>
+
+    @if (error) {<span class="text-danger px-1">{{error}}</span>}
+    <div class="py-2"></div>
+    <div class="modal-footer d-flex justify-content-between">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cerrar
+        </button>
+        <button type="button" class="btn btn-primary" type="submit" [disabled]="dataForm.invalid">
+            Crear
+        </button>
+
+
+    </div>
+</form>
+}
+
+@else{
+<form (ngSubmit)="sendData()" [formGroup]="complaintForm">
+
+    <div class="row">
+        <div class="mb-3 form-floating form-group col">
+            <label for="typ" class="col-form-label py-1  px-4">Tipo de recomendación:</label>
+            <input type="text" disabled [value]="data?.type" name="typ" class="form-control" id="typ">
+        </div>
+    </div>
+    <div class="row">
+        <div class="mb-3 form-floating form-group col">
+            <label for="description" class="col-form-label py-1  px-4">Descripción:</label>
+            <textarea disabled [value]="data?.description" name="description" class="form-control"
+                id="description"></textarea>
+
+        </div>
+    </div>
+
+    @if (edit) {
+    <div class="row">
+        <div class="mb-3 form-floating form-group col">
+            <label for="complaintStatus" class="col-form-label py-1  px-4">Estado del reclamo:</label>
+            <select class="form-select" aria-label="Tipo de reclamo" name="complaintStatus" id="complaintStatus"
+                formControlName="complaintStatus">
+                <option selected value={{complaintStatus.ACCEPTED}}>Aceptado</option>
+                <option value={{complaintStatus.REJECTED}}>Rechazado</option>
+            </select>
+            @if (dataForm.get('complaintStatus')?.touched && dataForm.get('complaintStatus')?.errors?.['required']) {
+            <div class="alert mt-3 alert-danger">El estado del reclamo es requerido.</div>
+            }
+
+            @if (dataForm.get('complaintStatus')?.touched && dataForm.get('complaintStatus')?.errors?.['minlength']) {
+            <div class="alert mt-3 alert-danger">El estado del reclamo debe de tener un mínimo de
+                {{dataForm.get('complaintStatus')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+            }
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="mb-3 form-floating form-group col">
+            <label for="note" class="col-form-label py-1  px-4">Nota:</label>
+            <textarea name="note" class="form-control" formControlName="note"
+                id="note"></textarea>
+            @if (dataForm.get('note')?.touched && dataForm.get('note')?.errors?.['required']) {
+            <div class="alert mt-3 alert-danger">La nota es requerida.</div>
+            }
+
+            @if (dataForm.get('note')?.touched && dataForm.get('note')?.errors?.['minlength']) {
+            <div class="alert mt-3 alert-danger">La nota debe de tener mínimo
+                {{dataForm.get('note')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+            }
+
+        </div>
+    </div>
+}
+
+    @else {
+        <div class="row">
+            @if (data?.revisedBy) {
+                <div class="mb-3 form-floating form-group col">
+                    <label for="user" class="col-form-label py-1  px-4">Revisado por:</label>
+                    <input name="user" class="form-control" disabled [value]="data?.revisedBy?.firstname+' '+data?.revisedBy?.lastname" id="user">
+                </div>
+            }
+            <div class="mb-3 form-floating form-group col">
+                <label for="complaintStatus" class="col-form-label py-1  px-4">Estado:</label>
+                <textarea name="complaintStatus" class="form-control" disabled [value]="data?.complaintStatus" id="complaintStatus"></textarea>
+            </div>
+        </div>
+        @if (data?.note) {
+            <div class="row">
+                <div class="mb-3 form-floating form-group col">
+                    <label for="notee" class="col-form-label py-1  px-4">Nota:</label>
+                    <textarea name="notee" class="form-control" disabled [value]="data?.note" id="notee"></textarea>
+        
+                </div>
+            </div>
+        }
+    
+    
+    
+    }
+    @if (error) {<span class="text-danger px-1">{{error}}</span>}
+    <div class="py-2"></div>
+    <div class="modal-footer d-flex justify-content-between">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cerrar
+        </button>
+        @if (data) {
+        @if (!show) {
+        <button type="button" class="btn btn-primary" type="submit"
+            [disabled]="dataForm.invalid || complaintForm.invalid">
+            Confirmar reclamo
+        </button>
+        }
+        }
+
+
+    </div>
+</form>
+}

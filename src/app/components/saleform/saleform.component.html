@@ -1,0 +1,248 @@
+<form (ngSubmit)="sendData()" [formGroup]="dataForm">
+    <div class="row">
+        <div class="mb-3 form-floating form-group col">
+            <label for="item" class="col-form-label py-1 px-4">Selecciona un artículo:</label>
+            <select class="form-select" #selectList (change)="addItem(selectList.value)"
+                aria-label="Seleccion de artículo" name="item" id="item" formControlName="item">
+                <option selected value="">Selecciona un artículo</option>
+                <option *ngFor="let item of inventoryList" value="{{ item | json }}">
+                    {{item.name}} {{item.price}}$</option>
+            </select>
+            <div *ngIf="dataForm.get('item')?.touched && dataForm.get('item')?.errors?.['required']"
+                class="alert mt-3 alert-danger">El artículo es requerido.</div>
+        </div>
+        <!-- <div class="mb-3 form-floating form-group col">
+            <label for="quantity" class="col-form-label py-1">Cantidad:</label>
+            <input type="number" class="form-control" id="quantity" formControlName="quantity">
+            <div *ngIf="dataForm.get('quantity')?.touched && dataForm.get('quantity')?.errors?.['required']"
+                class="alert mt-3 alert-danger">La cantidad es requerida.</div>
+            <div *ngIf="dataForm.get('quantity')?.touched && dataForm.get('quantity')?.errors?.['min']"
+                class="alert mt-3 alert-danger">
+                La cantidad debe de ser mayor o igual a 0.</div>
+        </div> -->
+    </div>
+ 
+        <div class="row">
+            @for (i of selectedItems; track $index) {
+
+            <section class="col me-2">
+
+                <div class="row justify-content-start">
+                    <div class="col list-group-item">
+                        <div class="card widget-card border-light shadow-sm mb-2 ms-2">
+                            <div class="card-body p-4">
+                                <div class="row">
+                                    <div class="col" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                        <h5 style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-title widget-card-title mb-4 text-uppercase text-break">
+                                            {{i.name}}</h5>
+                                    </div>
+                                    <div class="col-auto">
+                                        <p style="cursor: pointer;" (click)="removeItem(i)"
+                                            class=" badge bg-danger rounded-pill"><i class="fa-solid fa-xmark "></i></p>
+                                    </div>
+                                </div>
+                                <div class="row gy-4">
+                                    <div class="col-12">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <div class="d-flex align-items-center">
+                                                    <div>
+                                                        <div
+                                                            class="fs-5 bsb-w-50 bsb-h-50 bg-primary-subtle text-primary rounded-2 d-flex align-items-center justify-content-between me-3">
+                                                            <div>
+                                                                <img src="{{baseURL}}/{{i.image}}" alt="{{i.name}}"
+                                                                    class="square">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <h6>{{i.price}}$</h6>
+                                                        <p *ngIf="i.stock === 0" class="text-danger m-0 fs-7">Stock
+                                                            actual: {{i.stock}}</p>
+                                                        <p *ngIf="i.stock > 0 && i.stock<5"
+                                                            class="text-warning m-0 fs-7">Stock actual: {{i.stock}}</p>
+                                                        <p *ngIf="i.stock > 5" class="text-success m-0 fs-7">Stock
+                                                            actual: {{i.stock}}</p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="">
+
+
+
+
+                                            <div class="row d-flex justify-content-between text-center mt-4">
+                                                <div class="col">
+                                                    <button class="btn btn-warning" type="button"
+                                                        (click)="minus(i)">-</button>
+
+
+                                                </div>
+                                                <div class="col">
+                                                    <p>{{i.quantity}}</p>
+                                                </div>
+                                                <div class="col">
+                                                    <button class="btn btn-primary" type="button"
+                                                        (click)="plus(i)">+</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            }
+        </div>
+    <!-- <ol class="list-group ">
+        <li class="list-group-item " *ngFor="let i of selectedItems">
+
+
+            <div class="">
+                <div class="">
+                    <div class="col">
+                        <div class="row">
+                            <img src="{{baseURL}}/{{i.image}}" class="square" alt="{{i.name}}">
+
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="row">
+                            <div class="col">
+                                <div class="fw-bold">{{i.name}} {{i.price}}$ / {{i.wholesale_price}} </div>
+                            </div>
+                            <div class="col-auto">
+                                <p style="cursor: pointer;" (click)="removeItem(i)"
+                                    class=" badge bg-danger rounded-pill "><i
+                                        class="fa-solid fa-xmark"></i></p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col ">
+                    <div class="row">
+                       <img src="{{baseURL}}/{{i.image}}" class="square col-2" alt="{{i.name}}">
+                    <div class="fw-bold col-auto me-auto">{{i.name}} {{i.price}}$ / {{i.wholesale_price}}</div>
+                    <span style="cursor: pointer;" (click)="removeItem(i)"
+                        class="badge bg-danger rounded-pill col-2">Eliminar</span>
+                    </div>
+                
+            </div>
+                <div class="row">
+                    <span>Stock actual:</span>
+                <div class="row">
+                    <span *ngIf="i.stock === 0" class="text-danger">{{i.stock}}, </span>
+                    <span *ngIf="i.stock > 0 && i.stock<5" class="text-warning">{{i.stock}}, </span>
+                    <span *ngIf="i.stock > 5" class="text-success">{{i.stock}}, </span>
+    
+                <button class="btn btn-sm btn-warning" type="button" (click)="minus(i)">-</button>
+                Cantidad a agregar: {{i.quantity}}
+                <button class="btn btn-sm btn-primary" type="button" (click)="plus(i)">+</button>
+                </div>
+                </div>
+            </div>
+
+
+        </li>
+    </ol> -->
+    @if (getRol() !== 'cliente') {
+        <div class="mb-3 form-floating form-group col mt-0">
+            <label for="client" class="col-form-label py-1">Selecciona el cliente:</label>
+            <select class="form-select" aria-label="Seleccion de Rol" name="client" id="client" formControlName="client">
+                <option selected value="">Selecciona un cliente</option>
+                <option *ngFor="let client of clientList" [value]="client.id">{{client.firstname}} {{client.lastname}}
+                </option>
+            </select>
+            <div *ngIf="dataForm.get('client')?.touched && dataForm.get('client')?.errors?.['required']"
+                class="alert mt-3 alert-danger">El cliente es requerido.</div>
+        </div>
+    }
+    <div class="row">
+        <div class="mb-3 form-floating form-group col">
+            <label for="address" class="col-form-label py-1  px-4">Dirección:</label>
+            <input type="text" class="form-control" id="address" formControlName="address">
+            <div *ngIf="dataForm.get('address')?.touched && dataForm.get('address')?.errors?.['required']"
+                class="alert mt-3 alert-danger">La dirección es requerida.</div>
+            <div *ngIf="dataForm.get('address')?.touched && dataForm.get('address')?.errors?.['minlength']"
+                class="alert mt-3 alert-danger">La dirección debe de tener mínimo
+                {{dataForm.get('address')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="mb-3 form-floating form-group col">
+            <div class="mb-3 form-floating form-group col">
+                <label for="paymentMethod" class="col-form-label py-1">Método de pago:</label>
+                <select class="form-select" (change)="clearCode()" aria-label="Seleccion de Rol" name="paymentMethod"
+                    id="paymentMethod" formControlName="paymentMethod">
+                    <option selected value="">Selecciona un método de pago</option>
+                    <option value={{methods.Cash}}>{{methods.Cash}}</option>
+                    <option value={{methods.Mobile}}>{{methods.Mobile}}</option>
+                    <option value={{methods.Transfer}}>{{methods.Transfer}}</option>
+                </select>
+                <div *ngIf="dataForm.get('paymentMethod')?.touched && dataForm.get('paymentMethod')?.errors?.['required']"
+                    class="alert mt-3 alert-danger">El método de pago es requerido.</div>
+            </div>
+        </div>
+        @if (dataForm.value.paymentMethod !== methods.Cash || "") {
+        <div class="mb-3 form-floating form-group col">
+            <label for="pay_code" class="col-form-label py-1  px-4"
+                aria-placeholder="Ultimos 4 digitos del codigo de referencia">Código de referencia (últimos 4
+                digitos):</label>
+            <input type="text" class="form-control" id="pay_code" formControlName="pay_code" maxlength="4"
+                appOnlynumbers>
+            <div class="alert mt-3 alert-danger"
+                *ngIf="dataForm.get('paymentMethod')?.value !== methods?.Cash && dataForm.get('pay_code')?.value?.length !== 4 && dataForm.get('pay_code')?.touched">
+                Debes introducir un codigo de referencia con 4 digitos</div>
+            <div class="alert mt-3 alert-danger" *ngIf="dataForm.get('pay_code')?.hasError('maxlength')">El código debe
+                de tener maximo 4 caracteres</div>
+        </div>
+        }
+    </div>
+
+    @if (selectedItems.length>0) {
+    <div class="row">
+        <div class="mb-3 mt-1 form-floating form-group col">
+            <label for="subtotal" class="col-form-label py-1 px-4">Subtotal:</label>
+            <input type="number" class="form-control" [value]="total.toFixed(2)" id="subtotal" disabled>
+        </div>
+        <div class="mb-3 mt-1 form-floating form-group col">
+
+                <label for="total" class="col-form-label py-1 px-4">Total + 4$ de Delivery:</label>
+                <input type="number" class="form-control" [value]="(total+4).toFixed(2)" id="total" disabled>
+                
+
+        </div>
+    </div>
+    }
+    <span *ngIf="error" class="text-danger px-1">{{error}}</span>
+    <div class="py-2"></div>
+    <div class="modal-footer  d-flex justify-content-between">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cerrar
+        </button>
+        <ng-container *ngIf="data; else elseTemplate">
+            <button type="button" class="btn btn-primary" type="submit"
+                [disabled]="dataForm.invalid || selectedItems.length < 1">
+                Editar
+            </button>
+        </ng-container>
+        <ng-template #elseTemplate>
+            <button type="button" class="btn btn-primary" type="submit"
+                [disabled]="dataForm.invalid || selectedItems.length < 1">
+                Crear
+            </button>
+        </ng-template>
+    </div>
+</form>

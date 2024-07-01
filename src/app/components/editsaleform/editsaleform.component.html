@@ -1,0 +1,106 @@
+<form (ngSubmit)="sendData()" [formGroup]="dataForm">
+    <ol class="list-group ">
+        <li class="list-group-item  justify-content-between align-items-start" *ngFor="let i of selectedItems">
+            <div class="row ">
+                <div class="fw-bold col-auto me-auto">{{i?.name}} {{i?.price}}$</div>
+            </div>
+            Cantidad: <span class="text-default">{{i?.qty}}</span>
+
+        </li>
+    </ol>
+    <div class="row">
+        <div class="mb-3 form-floating form-group col mt-1">
+            <label for="client" class="col-form-label py-1 px-4">Cliente:</label>
+            <input class="form-control" type="text" name="client" [value]="data?.client" disabled>
+        </div>
+        <div class="mb-3 mt-1 form-floating form-group col">
+            <label for="price" class="col-form-label py-1 px-4">Total:</label>
+            <input type="number" class="form-control" [value]="data?.price" id="price" disabled>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="mb-3 form-floating form-group col mt-1">
+            <label for="clientp" class="col-form-label py-1 px-4">Telefono del cliente:</label>
+            <input class="form-control" type="text" name="clientp" [value]="data?.clientPhone" disabled>
+        </div>
+        <div class="mb-3 form-floating form-group col mt-1">
+            <label for="st" class="col-form-label py-1 px-4">Estado:</label>
+            <input class="form-control" type="text" name="st" [value]="data?.status" disabled>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="mb-3 form-floating form-group col mt-1">
+            <label for="methodPayment" class="col-form-label py-1 px-4">Metodo de pago:</label>
+            <input class="form-control" type="text" name="methodPayment" [value]="data?.paymentMethod" disabled>
+        </div>
+        <div class="mb-3 form-floating form-group col mt-1">
+            <label for="pay_code" class="col-form-label py-1 px-4">Referencia de pago:</label>
+            <input class="form-control" type="text" name="pay_code" [value]="data?.pay_code" disabled>
+        </div>
+    </div>
+    @if (!show) {
+    <div class="mb-3 form-floating form-group col mt-1">
+        <label for="delivery_man" class="col-form-label py-1 px-2">Selecciona el repartidor:</label>
+        <select class="form-select" aria-label="Seleccion de Rol" name="delivery_man" id="delivery_man"
+            formControlName="delivery_man">
+            <option selected value="">Selecciona un repartidor</option>
+            <option *ngFor="let delivery_man of deliveryList" [value]="delivery_man.id">{{delivery_man?.firstname}}
+                {{delivery_man?.lastname}}
+            </option>
+        </select>
+        <div *ngIf="dataForm.get('delivery_man')?.touched && dataForm.get('delivery_man')?.errors?.['required']"
+            class="alert mt-3 alert-danger">El repartidor es requerido.</div>
+    </div>
+    }
+
+    <div class="row">
+        <div class="mb-3 mt-1 form-floating form-group col">
+            <label for="date" class="col-form-label py-1 px-4">Fecha de solicitud:</label>
+            <input type="text" class="form-control" [value]="data?.date" id="date" disabled>
+        </div>
+        @if (data?.status === STATUS_COMPLETED || data?.status === STATUS_WAITING || data?.status === STATUS_COMPLETED_TABLE) {
+            <div class="mb-3 mt-1 form-floating form-group col">
+                <label for="payment_date" class="col-form-label py-1 px-4">Fecha de pago:</label>
+                <input type="text" class="form-control" [value]="data?.payment_date" id="payment_date" disabled>
+            </div>
+        }
+
+    </div>
+
+    
+
+    @if (data?.status === 'Producto entregado') {
+        <div class="row">
+            <div class="mb-3 mt-1 form-floating form-group col-6">
+                <label for="address" class="col-form-label py-1 px-4">Direccion:</label>
+                <textarea type="text" class="form-control" [value]="data?.address" id="address" disabled></textarea>
+            </div>
+                <div class="mb-3 mt-1 form-floating form-group col-6">
+                    <label for="payment_date" class="col-form-label py-1 px-4">Confirmación de entrega:</label>
+                        <input type="text" class="form-control" [value]="data?.delivered" id="payment_date" disabled>
+                </div>
+        </div>
+    }
+    @else {
+        <div class="row">
+            <div class="mb-3 mt-1 form-floating form-group col">
+                <label for="address" class="col-form-label py-1 px-4">Direccion:</label>
+                <textarea type="text" class="form-control" [value]="data?.address" id="address" disabled></textarea>
+            </div>
+        </div>
+    }
+    <span *ngIf="error" class="text-danger px-1">{{error}}</span>
+    <div class="py-2"></div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cerrar
+        </button>
+
+        <button type="button" class="btn btn-primary" type="submit" [hidden]="show" [disabled]="dataForm.invalid">
+            Confirmar pedido
+        </button>
+
+    </div>
+</form>

@@ -1,0 +1,118 @@
+<form (ngSubmit)="sendData()" [formGroup]="userForm">
+  <div class="row">
+    <div class="mb-3 form-floating form-group col">
+      <label for="firstname" class="col-form-label py-1 px-4">Nombre:</label>
+      <input type="text" class="form-control" id="firstname" formControlName="firstname" maxlength="40">
+      <div *ngIf="userForm.get('firstname')?.touched && userForm.get('firstname')?.errors?.['required']"
+        class="alert mt-3 alert-danger">El nombre es requerido.</div>
+      <div *ngIf="userForm.get('firstname')?.touched && userForm.get('firstname')?.errors?.['minlength']"
+        class="alert mt-3 alert-danger">El nombre debe de tener minimo
+        {{userForm.get('firstname')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+    </div>
+    <div class="mb-3 form-floating form-group col">
+      <label for="lastname" class="col-form-label py-1 px-4">Apellido:</label>
+      <input type="text" class="form-control" id="lastname" formControlName="lastname" maxlength="40">
+      <div *ngIf="userForm.get('lastname')?.touched && userForm.get('lastname')?.errors?.['required']"
+        class="alert mt-3 alert-danger">El apellido es requerido.</div>
+      <div *ngIf="userForm.get('lastname')?.touched && userForm.get('lastname')?.errors?.['minlength']"
+        class="alert mt-3 alert-danger">El apellido debe de tener minimo
+        {{userForm.get('lastname')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="mb-3 form-floating form-group col">
+      <label for="email" class="col-form-label py-1 px-4">Correo:</label>
+      <input type="text" class="form-control" id="email" formControlName="email" [attr.disabled]="editing ? '' : null"
+        maxlength="50">
+      <div *ngIf="userForm.get('email')?.touched && userForm.get('email')?.errors?.['required']"
+        class="alert mt-3 alert-danger">El Correo es requerido.</div>
+      <div *ngIf="userForm.get('email')?.touched && userForm.get('email')?.errors?.['minlength']"
+        class="alert mt-3 alert-danger">El Correo debe de tener minimo
+        {{userForm.get('email')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+    </div>
+    <div class="mb-3 form-floating form-group col">
+      <label for="password" class="col-form-label py-1 px-4">Contraseña:</label>
+      <input type="password" class="form-control" id="password" formControlName="password" maxlength="40">
+      <div *ngIf="userForm.get('password')?.touched && userForm.get('password')?.errors?.['required']"
+        class="alert mt-3 alert-danger">La Contraseña es requerida.</div>
+      <div *ngIf="userForm.get('password')?.touched && userForm.get('password')?.errors?.['minlength']"
+        class="alert mt-3 alert-danger">La contraseña debe de tener mínimo
+        {{userForm.get('password')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+    </div>
+  </div>
+  <div class="row">
+
+
+    <div class="mb-3 form-floating form-group col">
+      <label for="gender" class="col-form-label py-1 px-4">Genero:</label>
+      <select class="form-select" aria-label="Seleccion de genero" name="gender" id="gender" formControlName="gender">
+        <option selected value="Femenino">Femenino</option>
+        <option value="Masculino">Masculino</option>
+      </select>
+      <div *ngIf="userForm.get('gender')?.touched && userForm.get('gender')?.errors?.['required']"
+        class="alert mt-3 alert-danger">El genero es requerido.</div>
+    </div>
+
+
+  </div>
+  <div class="row">
+    <div class="mb-3 form-floating form-group col">
+      <label for="dni" class="col-form-label py-1 px-4">Cédula:</label>
+      <input type="text" class="form-control" id="dni" formControlName="dni" maxlength="40" appOnlynumbers>
+      <div *ngIf="userForm.get('dni')?.touched && userForm.get('dni')?.errors?.['required']"
+        class="alert mt-3 alert-danger">La cédula es requerida.</div>
+      <div *ngIf="userForm.get('dni')?.touched && userForm.get('dni')?.errors?.['minlength']"
+        class="alert mt-3 alert-danger">La cedula debe de tener minimo
+        {{userForm.get('dni')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+    </div>
+    <div class="mb-3 form-floating form-group col">
+      <label for="birthdate" class="col-form-label py-1 px-4">Fecha de nacimiento:</label>
+      <input type="date" class="form-control" id="birthdate" formControlName="birthdate">
+      <div *ngIf="userForm.get('birthdate')?.touched && userForm.get('birthdate')?.errors?.['required']"
+        class="alert mt-3 alert-danger">Introduce una fecha de nacimiento válida.</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="mb-3 form-floating form-group col">
+      <label for="phone" class="col-form-label py-1 px-4">Teléfono:</label>
+      <input type="text" class="form-control" id="phone" formControlName="phone" maxlength="40" inputmode="numeric"
+        pattern="[0-9]*" appOnlynumbers>
+      <div *ngIf="userForm.get('phone')?.touched && userForm.get('phone')?.errors?.['minlength']"
+        class="alert mt-3 alert-danger">El teléfono debe de tener minimo
+        {{userForm.get('phone')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+    </div>
+    <div class="mb-3 form-floating form-group col">
+      <label for="roles" class="col-form-label py-1 px-4">Rol:</label>
+      <select class="form-select" aria-label="Seleccion de Rol" name="roles" id="roles" formControlName="roles">
+        <!-- <option selected value={{RolENUM.CLIENT}}>{{RolENUM.CLIENT}}</option> -->
+        <option selected value={{RolENUM.CASHIER}}>Cajero</option>   
+        <option value={{RolENUM.MANAGER}}>Gerente</option>
+        <option value={{RolENUM.DELIVERY_MAN}}>Repartidor</option>
+             
+      </select>
+      <div *ngIf="userForm.get('roles')?.touched && userForm.get('roles')?.errors?.['required']"
+        class="alert mt-3 alert-danger">El rol es requerido.</div>
+    </div>
+  </div>
+  <span *ngIf="error" class="text-danger px-1">{{error}}</span>
+  <div class="py-2"></div>
+  <div class="modal-footer d-flex justify-content-between">
+
+      <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+        Cerrar
+      </button>
+      @if (userData) {
+      <button type="button" class="btn btn-primary" type="submit" [disabled]="userForm.invalid">
+        Editar
+      </button>
+      }
+      @else {
+      <button type="button" class="btn btn-primary" type="submit" [disabled]="userForm.invalid">
+        Crear
+      </button>
+      }
+
+
+
+  </div>
+</form>
