@@ -1,6 +1,6 @@
 # FOGOTEND
 
-Proyecto desarrollado con [Angular (https://github.com/angular/angular-cli) 17.3.7.
+Proyecto desarrollado con [Angular] (https://github.com/angular/angular-cli) 17.3.7.
 
 ## Iniciar servidor de desarrollo
 
