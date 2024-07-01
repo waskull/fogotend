@@ -1,0 +1,58 @@
+
+                    <app-header title="Reportes"></app-header>
+
+<div class="container">
+    <div class="row px-5 mt-2 py-2">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-header">
+                    <label for="purchases" class="col-form-label py-1">Selecciona las fechas para generar los reportes
+                        de pedidos</label>
+                    
+                    
+              
+                          <div class="row center-align">
+
+                    <div class="col-md-4 form-floating">
+                        <label for="picker1" class="py-1 px-4">Fecha Inicial:</label>
+                        <dp-date-picker #dateComponent
+                    class="form-control date-picker"
+                      [config]="config"
+                      [mode]="'day'"
+                      placeholder="Selecciona la Fecha de Inicio"
+                      required="true"
+                      [theme]="'dp-material dp-main' || 'dp-main'"
+                      id="picker1"
+                      [(ngModel)]="start"
+                      >
+                    </dp-date-picker>
+                    </div>
+                    <div class="col-md-4 form-floating">
+                        <label for="picker2" class="py-1 px-4">Fecha Final:</label>
+                        <dp-date-picker #dateComponent
+                    class="form-control date-picker"
+                    [config]="config"
+                      [mode]="'day'"
+                      placeholder="Selecciona la Fecha Final"
+                      required="true"
+                      [theme]="'dp-material dp-main' || 'dp-main'"
+                      id="picker2"
+                      [(ngModel)]="end"
+                      >
+                    </dp-date-picker> 
+                    </div>
+
+                  <div class="col-md-2">
+                    <div class="form-floating">
+                        <label for="type" class="py-1">Tipo de Reporte</label>
+                        <select name="type" id="type" class="form-select" aria-label="Floating label select example" #type (change)="updateButton($event)">
+                            <option selected value="orders">Compras</option>
+                            <option value="sales">Pedidos</option>
+                        </select>
+                      </div>
+                  </div>
+                    </div>
+                <button class="mt-5 btn btn-primary w-100" (click)="getRows()" [disabled]="!start || !end" type="button">Generar Reportes de {{buttonText}}</button>
+        </div>
+    </div>
+</div>

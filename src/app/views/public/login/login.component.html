@@ -1,0 +1,287 @@
+
+
+<div class="jumbotron d-flex align-items-center justify-content-center vh100">
+  <div class="col-10 col-md-auto col-sm-10  mx-auto ">
+    <div class="imagePreview container">
+      <img src="../../../../assets/images/fogon.png" alt="cali" class="img-fluid" data-toggle="tooltip" data-placement="top" title="El fogón del Este">
+    </div>
+    <ul class="nav nav-pills nav-fill mb-2">
+      <li class="nav-item">
+        <a [className]="isLogin ? 'active nav-link' : 'nav-link'"  style="cursor: pointer;" aria-current="page" (click)="isLogin = true">Inicio de sesión</a>
+      </li>
+      <li class="ms-2 nav-item">
+        <a [className]="!isLogin ? 'active nav-link'  : 'nav-link'"  style="cursor: pointer;" (click)="isLogin = false">Registro</a>
+      </li>
+    </ul>
+    @if (isLogin) {
+      <div class="card border-0 shadow-none bg-light rounded">
+        <div class="card-header px-lg-1">
+          <div class="card-heading text-primary">
+            <div class="form-group fit container">
+            </div>
+            <h3 class="text-center primary">Inicio de Sesión</h3>
+          </div>
+        </div>
+        <div class="card-body ">
+          <h4 class="mb-2">Bienvenido al restaurante El Fogón del Este.</h4>
+          <p class="text-muted text-sm">Introduce tu usuario y contraseña por favor.
+  
+  
+  
+          </p>
+  
+          <form (ngSubmit)="login()" [formGroup]="loginForm">
+            <div class=" mb-3 form-group">
+              <label>Correo:<span class="text-danger"></span></label>
+              <div class="input-group input-group-lg">
+                <div class="input-group-text"><i class="fa-solid fa-at"></i></div>
+              <input class="form-control" id="floatingInput" [className]="loginForm.get('email')?.touched && (loginForm.get('email')?.errors?.['required'] || loginForm.get('email')?.errors?.['minlength']) ? 'form-control is-invalid' : 'form-control'" type="email" formControlName="email" maxlength="40"
+                placeholder="correo@gmail.com">
+              
+              </div>
+  
+              @if (loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['required'] && isLogin) {
+              <div class="alert mt-3 alert-danger">El Correo es requerido</div>
+              }
+              @if (loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['minlength']  && isLogin) {
+              <div class="alert mt-3 alert-danger">El Correo debe de tener minimo
+                {{loginForm.get('email')?.errors?.['minlength'].requiredLength}} caracteres</div>
+              }
+  
+            </div>
+            <div class="mb-3 form-group">
+              <label>Contraseña:<span class="text-danger"></span></label>
+  
+              <div class="input-group input-group-lg">
+                <div class="input-group-text"><i class="fa-solid fa-key"></i></div>
+                <input class="form-control" [className]="loginForm.get('password')?.touched && (loginForm.get('password')?.errors?.['required'] || loginForm.get('password')?.errors?.['minlength']) ? 'form-control is-invalid' : 'form-control'" #passInput id="floatingPassword" type="password" formControlName="password"
+                placeholder="Contraseña" maxlength="40">
+              
+              </div>
+  
+              
+  
+              @if (loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['required']  && isLogin) {
+              <div class="alert mt-3 alert-danger">La Contraseña es requerida</div>
+              }
+              @if (loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['minlength']  && isLogin) {
+              <div class="alert mt-3 alert-danger">La contraseña debe de tener minimo
+                {{loginForm.get('password')?.errors?.['minlength'].requiredLength}} caracteres</div>
+              }
+  
+            </div>
+            @if (error) {<div class="alert alert-danger mb-3 px-1">{{message}}</div>}
+            <div class="form-check mb-2 d-flex justify-content-start">
+              <input class="form-check-input" type="checkbox" id="flexCheckChecked" formControlName="rememberEmail">
+              <label class="form-check-label ms-1" for="flexCheckChecked">
+                Recordarme
+              </label>
+            </div>
+            <button class="btn btn-primary btn-block w-100" type="submit"
+              [disabled]="loginForm.invalid || isSubmiting">
+              @if (isSubmiting) {
+                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                <span role="status"> Cargando...</span>
+              }
+              @else {
+                <span role="status">Iniciar sesión</span>
+              }
+            </button>
+          </form>
+          <div>
+            <p class="pt-2 forgot text-md-end">¿No tienes una cuenta?
+              <a class="px-0 mynav" style="cursor: pointer; color: blue" (click)="isLogin = false;">
+                <span class="">Crear Cuenta</span>
+              </a>
+            </p>
+  
+          </div>
+          <div>
+            <p class="pt-1 forgot text-md-end">¿Olvidaste tu contraseña?
+              <a class="px-0 mynav" style="cursor: pointer; color: blue" (click)="resetPassword()">
+                <span class="">Recuperar clave</span>
+              </a>
+            </p>
+  
+          </div>
+        </div>
+      </div>
+    }
+    @else {
+      <div class="card border-0 shadow-none bg-light rounded">
+        <div class="card-header px-lg-1">
+          <div class="card-heading text-primary">
+            <div class="form-group fit container">
+            </div>
+            <h3 class="text-center primary">Registro</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <h4 class="mb-2">Bienvenido al restaurante El Fogón del Este.</h4>
+          <p class="text-muted text-sm">Introduce los datos solicitados por favor.
+  
+  
+  
+          </p>
+  
+          <form (ngSubmit)="register()" [formGroup]="registerForm">
+            <div class="row">
+              <div class="mb-3 form-floating form-group col">
+                <label for="firstname" class="col-form-label py-1 px-4">Nombre:</label>
+                <input type="text" class="form-control" id="firstname" formControlName="firstname" maxlength="40">
+                @if (registerForm.get('firstname')?.touched && registerForm.get('firstname')?.errors?.['required']) {
+                <div class="alert mt-3 alert-danger">El nombre es requerido.</div>
+                }
+                @if (registerForm.get('firstname')?.touched && registerForm.get('firstname')?.errors?.['minlength']) {
+                <div class="alert mt-3 alert-danger">El nombre debe de tener minimo
+                  {{registerForm.get('firstname')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+                }
+  
+              </div>
+              <div class="mb-3 form-floating form-group col">
+                <label for="lastname" class="col-form-label py-1 px-4">Apellido:</label>
+                <input type="text" class="form-control" id="lastname" formControlName="lastname" maxlength="40">
+                @if (registerForm.get('lastname')?.touched && registerForm.get('lastname')?.errors?.['required']) {
+                <div class="alert mt-3 alert-danger">El apellido es requerido.</div>
+                }
+                @if (registerForm.get('lastname')?.touched && registerForm.get('lastname')?.errors?.['minlength']) {
+                <div class="alert mt-3 alert-danger">El apellido debe de tener minimo
+                  {{registerForm.get('lastname')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+                }
+  
+              </div>
+            </div>
+            <div class="row">
+              <div class="mb-3 form-floating form-group col">
+                <label for="email" class="col-form-label py-1 px-4">Correo:</label>
+                <input type="email" class="form-control" id="email" formControlName="email" maxlength="50">
+                @if (registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['required']) {
+                <div class="alert mt-3 alert-danger">El Correo es requerido.</div>
+                }
+  
+                @if (registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['minlength']) {
+                <div class="alert mt-3 alert-danger">El Correo debe de tener minimo
+                  {{registerForm.get('email')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+                }
+  
+              </div>
+              <div class="mb-3 form-floating form-group col">
+                <label for="password" class="col-form-label py-1 px-4">Contraseña:</label>
+                <input type="password" class="form-control" id="password" formControlName="password" maxlength="40">
+                @if (registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['required']) {
+                  <div class="alert mt-3 alert-danger">La Contraseña es requerida.</div>
+                }
+                
+                @if (registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['minlength']) {
+                  <div class="alert mt-3 alert-danger">La contraseña debe de tener mínimo
+                  {{registerForm.get('password')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+                }
+                
+              </div>
+            </div>
+            <div class="row">
+              <div class="mb-3 form-floating form-group col">
+                <label for="dni" class="col-form-label py-1 px-4">Cédula:</label>
+                <input type="text" class="form-control" id="dni" formControlName="dni" maxlength="40" appOnlynumbers>
+                @if (registerForm.get('dni')?.touched && registerForm.get('dni')?.errors?.['required']) {
+                <div class="alert mt-3 alert-danger">La cédula es requerida.</div>
+                }
+  
+                @if (registerForm.get('dni')?.touched && registerForm.get('dni')?.errors?.['minlength']) {
+                <div class="alert mt-3 alert-danger">La cedula debe de tener minimo
+                  {{registerForm.get('dni')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+                }
+  
+              </div>
+              <div class="mb-3 form-floating form-group col">
+                <label for="birthdate" class="col-form-label py-1 px-4">Fecha de nacimiento:</label>
+                <input type="date" class="form-control" id="birthdate" formControlName="birthdate">
+                
+                 <!-- <label for="picker1" class="py-1 px-4">Fecha de nacimiento</label>
+                 <dp-date-picker #dateComponent
+                   class="form-control date-picker"
+                     [config]="config"
+                     [mode]="'day'"
+                     placeholder="Selecciona la fecha de nacimiento"
+                     required="true"
+                     [theme]="'dp-material dp-main' || 'dp-main'"
+                     id="picker1"
+                     formControlName="birthdate"
+                     >
+                   </dp-date-picker> -->
+                @if (registerForm.get('birthdate')?.touched && registerForm.get('birthdate')?.errors?.['required']) {
+                <div class="alert mt-3 alert-danger">Introduce una fecha de nacimiento válida.</div>
+                }
+              </div>
+            </div>
+            <div class="row">
+              <div class="mb-3 form-floating form-group col">
+                <label for="gender" class="col-form-label py-1 px-4">Genero:</label>
+                <select class="form-select" aria-label="Seleccion de genero" name="gender" id="gender"
+                  formControlName="gender">
+                  <option selected value="Femenino">Femenino</option>
+                  <option value="Masculino">Masculino</option>
+                </select>
+                @if (registerForm.get('gender')?.touched && registerForm.get('gender')?.errors?.['required']) {
+                <div class="alert mt-3 alert-danger">El genero es requerido.</div>
+                }
+  
+              </div>
+  
+              <div class="mb-3 form-floating form-group col">
+                <label for="phone" class="col-form-label py-1 px-4">Teléfono:</label>
+                <input type="text" class="form-control" id="phone" formControlName="phone" maxlength="40"
+                  inputmode="numeric" pattern="[0-9]*" appOnlynumbers>
+                @if (registerForm.get('phone')?.touched && registerForm.get('phone')?.errors?.['minlength']) {
+                <div class="alert mt-3 alert-danger">El teléfono debe de tener minimo
+                  {{registerForm.get('phone')?.errors?.['minlength'].requiredLength}} caracteres.</div>
+                }
+  
+              </div>
+            </div>
+  
+            @if (errorReg) {
+            <span class="text-danger px-1">{{messageReg}}</span>
+            }
+            <div class="py-2"></div>
+  
+  
+            <button type="button" class="btn btn-primary btn-block w-100" type="submit" [disabled]="registerForm.invalid">
+              @if (isSubmiting) {
+                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                <span role="status"> Cargando...</span>
+              }
+              @else {
+                <span role="status">Crear cuentan</span>
+              }
+            </button>
+  
+  
+  
+  
+          </form>
+          <div>
+            <p class="pt-2 forgot text-md-end">¿Ya tienes una cuenta?
+              <a class="px-0 mynav" style="cursor: pointer; color: blue" (click)="isLogin = true">
+                <span class="">Iniciar sesión</span>
+              </a>
+            </p>
+  
+          </div>
+        </div>
+      </div>
+    }
+    
+    <div class="container text-center">
+      <h5 class="text-white text-center">Tecnologías usadas</h5>
+    <div class="row flex flex-row align-content-between">
+      <div class="flex-column imagePreview container">
+        <img src="../../../../assets/images/angular.png" alt="angular" class="img-fluid image" data-toggle="tooltip" data-placement="left" title="Angular 17">
+      </div>
+      <div class=" flex-column imagePreview container">
+        <img src="../../../../assets/images/nestjs.png" alt="nestjs" class="img-fluid image" data-toggle="tooltip" data-placement="right" title="NestJS">
+      </div>
+    </div>
+    </div>
+  </div>
+</div>

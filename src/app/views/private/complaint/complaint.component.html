@@ -1,0 +1,45 @@
+<app-header title="Recomendaciones"></app-header>
+
+<main class="py-6 bg-surface-secondary">
+    <div class="container-fluid   pb-4">
+
+
+
+        <div class="card mt-lg-3 border-0 mb-7">
+            <div class="container d-flex justify-content-between row" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                <div class="btn-group mt-2 mb-1" role="group" aria-label="Basic radio toggle button group">
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                    <label #all class="btn btn-sm btn-outline-dark" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" (click)="setFilter('all')" for="btnradio1">Todos</label>
+                  
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                    <label class="btn btn-sm btn-outline-success" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" for="btnradio2" (click)="setFilter('Reclamo aceptado')">Aceptadas</label>
+                  
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                    <label class="btn btn-sm btn-outline-danger" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" for="btnradio3" (click)="setFilter('Reclamo rechazado')">Rechazadas</label>
+    
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+                    <label class="btn btn-sm btn-outline-warning" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" for="btnradio4" (click)="setFilter('Reclamo en revisión')">En revisión</label>
+                   </div>
+                   <div class=" text-end">
+                    <button class="btn btn-dark btn-sm mt-2 me-2" (click)="reload()">
+                        <div class="icon icon-shape dark text-white text-lg rounded-circle">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                        </div>
+                    </button>
+                    <app-modal [complaintForm]="true" modalId="modal" buttonName="Nueva recomendación" (emitData)="newValue($event)" class="col text-sm-end"></app-modal>
+                </div>
+                  
+                  
+            </div>
+
+         
+
+            <app-table [colNames]="columnNames" buttonName="Nueva recomendación" [columns]="columns" [report]="false" [rowData]="complaintList"
+                [complaintModal]="true" [operations]="op" (onEdit)="edit($event)" (onCancel)="cancel($event)"
+                (onConfirm)="confirm($event)" (onDelete)="delete($event)"></app-table>
+
+        </div>
+    </div>
+
+
+</main>
