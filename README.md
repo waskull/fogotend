@@ -8,7 +8,7 @@ Utiliza el comando `ng serve` para iniciar el servidor de desarrollo.
 
 ## Buildear la aplicación
 
-Utiliza el comando `ng build` para buildear la aplicación de helados Cali.
+Utiliza el comando `ng build` para construir la aplicación FOGOTEND.
 
 ## Pruebas Unitarias
 
