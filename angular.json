@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "fogotend": {
+    "elfogon": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/fogotend",
+            "outputPath": "dist/elfogon",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -26,50 +26,46 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
             ],
             "styles": [
-              "src/styles.scss",
-              {
-                "input": "src/assets/css/bootstrap.min.css",
-                "inject": true,
-                "bundleName": "bootstrap"
-              },
-              {
-                "input": "src/assets/css/all.min.css",
-                "inject": true,
-                "bundleName": "all"
-              }
+              "src/styles.scss"
             ],
             "scripts": [
               {
-                "input": "src/assets/js/scripts.js",
-                "inject": true,
-                "bundleName": "scripts"
-              },
-              {
-                "input":"src/assets/js/bootstrap.min.js",
+                "input": "src/assets/js/bootstrap.min.js",
                 "inject": true,
                 "bundleName": "bootstrap"
               }
             ],
             "allowedCommonJsDependencies": [
-              "dayjs", "file-saver"
+              "dayjs",
+              "file-saver"
             ]
           },
           "configurations": {
             "production": {
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": false
+              },
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "2MB",
+                  "maximumError": "3MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "119kB",
+                  "maximumError": "120kB"
                 }
               ],
               "outputHashing": "all"
@@ -92,19 +88,16 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "fogotend:build:production"
+              "buildTarget": "elfogon:build:production"
             },
             "development": {
-              "buildTarget": "fogotend:build:development"
+              "buildTarget": "elfogon:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "buildTarget": "fogotend:build"
-          }
+          "builder": "@angular-devkit/build-angular:extract-i18n"
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -116,6 +109,10 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              },
               "src/favicon.ico",
               "src/assets"
             ],
@@ -128,8 +125,5 @@
         }
       }
     }
-  },
-  "cli": {
-    "analytics": false
   }
 }
