@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import  InventoryComponent  from './inventory.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { InventoryService } from '../../../services/inventory.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('InventoryComponent', () => {
   let component: InventoryComponent;
@@ -10,9 +11,9 @@ describe('InventoryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InventoryComponent, HttpClientTestingModule],
-      providers: [InventoryService]
-    })
+    imports: [InventoryComponent],
+    providers: [InventoryService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(InventoryComponent);

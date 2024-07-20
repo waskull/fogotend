@@ -5,6 +5,7 @@ import { ModalComponent } from '../../../components/modal/modal.component';
 import { ProductService } from '../../../services/product.service';
 import { DatePipe } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth.service';
+import { catchError, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-product',
@@ -21,6 +22,8 @@ export default class ProductComponent {
   productService = inject(ProductService);
   datepipe = new DatePipe('en-US');
   authService = inject(AuthService);
+  loading:boolean = false;
+  error:string = '';
   constructor() { }
 
   ngOnInit(): void {
@@ -28,13 +31,24 @@ export default class ProductComponent {
     this.loadData();
   }
   loadData(){
-    this.productService.getAll().subscribe(res => {
+    this.loading = true;
+    this.productService.getAll().pipe(
+      catchError(err => {
+        this.loading = false;
+        if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
+        else {
+          this.error = err?.error?.message || 'Error al obtener los productos';
+        }
+        return throwError(() => err);
+      })
+    ).subscribe(res => {
       this.itemList = res.map(e => {
         e.createdAt = this.datepipe.transform(e.createdAt, 'dd-MM-yyyy, h:mm a'); 
         e.stock = e?.stock || 0;
         return e;
        
     });
+    this.loading = false;
     });
   }
   edit(item: any){

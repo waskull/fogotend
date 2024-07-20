@@ -5,17 +5,31 @@
     font-weight: 500;   
  }
 
+.dark{
+    background-color: #151515;
+}
+
 .imagePreview{
     width: 200px;
 }
+
+.imagep{
+    width: max-content;
+}
+
+.section {
+    height: 100%;  
+    display: flex;
+  }
 
 .forgot{
     font-weight: 500;
 }
 
 .image{
-    max-height: 100px;
-    max-width: 100px;
+    max-height: 75px;
+    max-width: 75px;
+    opacity: 0.1;
 }
 
 .vh100{

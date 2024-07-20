@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth/auth.service';
 import { validateTypeDate } from '../../../validators/dateValidator';
 import { OnlynumbersDirective } from '../../../onlynumbers.directive';
+import { ErrorStatus } from '../../../constants/Enum';
 
 @Component({
   selector: 'app-login',
@@ -59,9 +60,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
       catchError(err => {
         this.isSubmiting = false;
         this.error = true;
+        
         if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
         else {
           this.message = err?.error?.message || 'Error al logearse';
+          if(this.message  === ErrorStatus.NO_NETWORK || this.message  === ErrorStatus.NO_FETCH) this.message = "Error al contactar al servidor, verifique su conexión."
         }
         return throwError(() => err);
       })
@@ -70,7 +73,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       localStorage.setItem('token', res.data.accessToken);
       if(this.rememberEmail) localStorage.setItem('emailID', res.data.user.email);
       else localStorage.setItem('emailID', null);
-      this.isSubmiting = false;
+      // this.isSubmiting = false;
       this.router.navigate(['dashboard']);
     }
     );
@@ -91,7 +94,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
       firstname: this.registerForm.value.firstname.charAt(0).toUpperCase() + this.registerForm.value.firstname.slice(1),
       lastname: this.registerForm.value.lastname.charAt(0).toUpperCase() + this.registerForm.value.lastname.slice(1),
     }
-    console.log(payload);
     this.authService.register(payload).pipe(
       catchError(err => {
         this.isSubmiting = false;
@@ -99,6 +101,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
         else {
           this.messageReg = err?.error?.message || 'Error al registrarse';
+          if(this.message  === ErrorStatus.NO_NETWORK || this.message  === ErrorStatus.NO_FETCH) this.message = "Error al contactar al servidor, verifique su conexión."
         }
         return throwError(() => err);
       })

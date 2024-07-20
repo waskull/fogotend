@@ -6,7 +6,7 @@
 
         
        
-        <div class="card mt-lg-3 border-0 mb-7">
+        <div class="card shadow-none mt-lg-3 border-0 mb-7">
             <div class="container d-flex justify-content-between row" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                 <div class="btn-group mt-2 mb-1" role="group" aria-label="Basic radio toggle button group">
                     <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
@@ -31,10 +31,18 @@
                 </div>
                   
             </div>
-            
-            <app-table [colNames]="columnNames" [columns]="columns" [userModal]="true" [rowData]="userData"
+            @if (loading) {
+                <div class="spinner-grow text-dark text-center container mt-2 mb-2" style="width: 5rem; height: 5rem;" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                  </div>
+                  <span class="text-dark text-center  mb-4">Cargando...</span>
+            }
+            @else {
+                <app-table [colNames]="columnNames" [columns]="columns" [userModal]="true" [rowData]="userData"
                 [operations]="op" (onEdit)="editUser($event)" (onDelete)="deleteUser($event)"></app-table>
 
+            }
+            
         </div>
     </div>
 

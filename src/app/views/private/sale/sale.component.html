@@ -3,10 +3,10 @@
 <main class="py-6 bg-surface-secondary">
     <div class="container-fluid  pb-4">
 
-        <div class="card mt-lg-3 border-0 mb-7">
+        <div class="card shadow-none shadow-none mt-lg-3 border-0 mb-7">
             
 
-            @if (getRol() !== 'repartidor') {
+            @if (getRol() !== DELIVERY_MAN) {
                 <div class="container d-flex justify-content-between row" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                     <div class="btn-group mt-2  " role="group" aria-label="Basic radio toggle button group">
                         <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
@@ -32,18 +32,26 @@
                                 <i class="fa-solid fa-arrows-rotate "></i>
                             </div>
                         </button>
-                        <app-modal [saleForm]="true" modalId="modal" (emitData)="newValue($event)"
+                        <app-modal [saleForm]="true" buttonName="Nuevo pedido" modalId="modal" (emitData)="newValue($event)"
                 class="col text-sm-end"></app-modal>
                     </div>
                     
                 </div>
             }
             
-            
-
-            <app-table [clientCanCancel]="true" [showConfirm]="true" [colNames]="getRol() === 'cliente' ? ccolumnNames : columnNames" buttonName="Nuevo pedido" [columns]="getRol() === 'cliente' ? ccolumns : columns" [report]="true" [rowData]="saleList"
+            @if (loading) {
+                <div class="spinner-grow text-dark text-center container mt-2 mb-2" style="width: 5rem; height: 5rem;" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                  </div>
+                  <span class="text-dark text-center  mb-4">Cargando...</span>
+            }
+            @else {
+                <app-table [clientCanCancel]="true" [showConfirm]="true" [colNames]="getRol() === 'cliente' ? ccolumnNames : columnNames" buttonName="Nuevo pedido" [columns]="getRol() === 'cliente' ? ccolumns : columns" [report]="true" [rowData]="saleList"
                 [saleModal]="true" [operations]="op" (onEdit)="edit($event)" (onCancel)="cancel($event)"
                 (onConfirm)="confirm($event)" (onDelete)="delete($event)" (onConfirmOrder)="confirmOrder($event)"></app-table>
+            }
+
+            
 
         </div>
     </div>

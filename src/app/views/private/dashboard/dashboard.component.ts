@@ -6,6 +6,7 @@ import { SaleService } from '../../../services/sale.service';
 import { TableComponent } from '../../../components/table/table.component';
 import { RouterModule } from '@angular/router';
 import { Rol } from '../../../constants/Enum';
+import { catchError, throwError } from 'rxjs';
 Chart.register(...registerables);
 
 @Component({
@@ -16,14 +17,17 @@ Chart.register(...registerables);
   styleUrl: './dashboard.component.scss'
 })
 export default class DashboardComponent implements OnInit {
-  constructor() { }
   datepipe = new DatePipe('en-US');
   authService = inject(AuthService);
   saleService = inject(SaleService);
-  public chart: any;
-  public stats!:any;
-  public bills:any[] = [];
-  columnNames = ['artículos','TOTAL A PAGAR','método de pago','estado','cliente','fecha']
+  CLIENT:string = Rol.CLIENT;
+  loadingCards:boolean = false;
+  chart: any;
+  stats!:any;
+  error:string = "";
+  sales:any[] = [];
+  loading:boolean = false;
+  columnNames = ['artículos','TOTAL A PAGAR','método de pago','estado','cliente','fecha','']
   columns = ['items','total','method','status','client','date']
   rows = [{name:'asd',asd:'asdf'},{name:'123',asd:'456'}]
   op = {delete:false,edit:false}
@@ -38,15 +42,36 @@ export default class DashboardComponent implements OnInit {
     return this.authService.currentUser()?.roles[0];
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.loading = true;
+    this.loadingCards = true;
     this.authService.setModuleName('Visión General');    
-    this.saleService.getStats().subscribe(res => {
+    this.saleService.getStats().pipe(
+      catchError(err => {
+        this.loadingCards = false;
+        if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
+        else {
+          this.error = err?.error?.message || 'Error al obtener las estadisticas';
+        }
+        return throwError(() => err);
+      })
+    ).subscribe(res => {
       this.stats = res;
+      this.loadingCards = false;
       this.createChart(this.stats.topsales, this.stats.topclients, this.stats.weeksales);
     });
-    this.saleService.getLastFourBills().subscribe(res => {
-      this.bills = res;
-      this.bills.forEach(e => {
+    this.saleService.getLastFourSales().pipe(
+      catchError(err => {
+        this.loading = false;
+        if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
+        else {
+          this.error = err?.error?.message || 'Error al obtener los datos';
+        }
+        return throwError(() => err);
+      })
+    ).subscribe(res => {
+      this.sales = res;
+      this.sales.forEach(e => {
         e.status = e.status;
         e.items = e.sale_items.map((r: { item: { name: string; }; quantity: string; }) => {
           return ` ${r.item.name} cantidad: ${r.quantity}`;
@@ -55,8 +80,9 @@ export default class DashboardComponent implements OnInit {
         e.client = e?.user?.firstname ? `${e?.user?.firstname} ${e?.user?.lastname}` : null; 
         e.date = this.datepipe.transform(e.createdAt, 'dd-MM-yyyy, h:mm a');
         e.updateAt = this.datepipe.transform(e.updatedAt, 'dd-MM-yyyy, h:mm a')
-      });
-
+      }
+    );
+    this.loading = false;
     });
   }
 
@@ -187,6 +213,8 @@ var myChart3 = new Chart("myChart3", {
               },
             },
             y: {
+              beginAtZero: true,
+              min: 0,
               ticks: {
                 maxTicksLimit: 5,
                 callback: function(value, index, ticks) {
