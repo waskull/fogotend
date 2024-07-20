@@ -2,8 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReportgeneratorComponent } from './reportgenerator.component';
 import { OrderService } from '../../services/order.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SaleService } from '../../services/sale.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ReportgeneratorComponent', () => {
   let component: ReportgeneratorComponent;
@@ -11,9 +12,9 @@ describe('ReportgeneratorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReportgeneratorComponent, HttpClientTestingModule],
-      providers: [SaleService, OrderService]
-    })
+    imports: [ReportgeneratorComponent],
+    providers: [SaleService, OrderService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(ReportgeneratorComponent);

@@ -19,11 +19,14 @@ export class ComplaintformComponent {
   dataForm!: FormGroup;
   complaintForm!: FormGroup;
   editing: boolean = false;
+  sending: boolean = false;
   error: string = '';
   fb = inject(FormBuilder);
   complaintService = inject(ComplaintService);
   type = ComplaintType;
   complaintStatus = ComplaintStatus;
+  COMPLAINT_ACCEPTED = this.complaintStatus.ACCEPTED;
+  COMPLAINT_REJECTED = this.complaintStatus.REJECTED;
   ngOnInit(): void {
     this.dataForm = this.initForm();
     this.complaintForm = this.complaintFormInit();
@@ -47,6 +50,7 @@ export class ComplaintformComponent {
     return d;
   }
   sendData() {
+    this.sending = true;
     let Data: any = {
       type: this.dataForm.value.type,
       description: this.dataForm.value.description
@@ -57,6 +61,7 @@ export class ComplaintformComponent {
       
       this.complaintService.update({note: this.complaintForm.value.note, complaintStatus: this.complaintForm.value.complaintStatus}, id).pipe(
         catchError(err => {
+          this.sending = false;
           if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
           else {
             this.error = err?.error?.message || 'Error al confirmar el reclamo';
@@ -68,12 +73,14 @@ export class ComplaintformComponent {
         Data.id = id;
         this.dataForm.reset();
         this.emitForm.emit(Data);
+        this.sending = false;
       });
     }
     else {
       delete Data?.id;
       this.complaintService.create(Data).pipe(
         catchError(err => {
+          this.sending = false;
           if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
           else {
             this.error = err?.error?.message || 'Error al crear el reclamo';
@@ -84,6 +91,7 @@ export class ComplaintformComponent {
         this.error = '';
         this.dataForm.reset();
         this.emitForm.emit(Data);
+        this.sending = false;
       });
     }
   }

@@ -1,29 +1,42 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { IUser } from '../../interfaces';
 import { Router, RouterModule } from '@angular/router';
-
+import { ErrorStatus, Rol } from '../../constants/Enum';
+import { catchError, throwError } from 'rxjs';
+import { DialogComponent } from '../dialog/dialog.component';
+declare var window: any;
 @Component({
   selector: 'sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [DialogComponent, RouterModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent implements OnInit {
   @Output() onToggleSidenav: EventEmitter<{ screenWidth: number, collapsed: boolean }> = new EventEmitter();
+  @ViewChild('closeButton') buttonToBeClicked: ElementRef;
   authService = inject(AuthService);
   router = inject(Router);
+  ADMIN = Rol.ADMIN;
+  dialog: any;
   rol = '';
   isHidden = false;
   public userData!: IUser;
-
+  public emitLogout(data: any) {
+    this.dialog.hide();
+    this.authService.logout();
+    this.router.navigateByUrl('/');
+  }
   public getModuleName(): string {
-    return this.authService.getModuleName().toUpperCase();
+    return this.authService?.getModuleName()?.toUpperCase();
+  }
+  closeSidebar(){
+    this.buttonToBeClicked.nativeElement.click();
   }
 
-  getRol(){
+  getRol() {
     return this.authService.currentUser()?.roles[0];
   }
 
@@ -31,8 +44,9 @@ export class SidebarComponent implements OnInit {
     return `${this.authService.currentUser()?.firstname?.at(0)} ${this.authService.currentUser()?.lastname?.at(0)}`
   }
 
-  public getUserFullaname(): string {
-    return `${this.authService.currentUser()?.firstname} ${this.authService.currentUser()?.lastname}`
+  public getUserFullaname(): string | undefined {
+    const fullname = this.authService.currentUser()?.firstname ? `${this.authService.currentUser()?.firstname} ${this.authService.currentUser()?.lastname}` : undefined;
+    return fullname;
   }
 
   ngOnInit(): void {
@@ -72,7 +86,15 @@ export class SidebarComponent implements OnInit {
         gender: this.authService.currentUser()?.gender
       }
     }
-    this.authService?.getInfo().subscribe(info => {
+    this.authService?.getInfo().pipe(
+      catchError(err => {
+        if (err?.error?.message === ErrorStatus.NO_NETWORK || err?.error?.message === ErrorStatus.NO_FETCH) {
+          alert("No hay conexión con el servidor se cerrara la sesión");
+          this.autoLogout();
+        }
+        return throwError(() => err);
+      })
+    ).subscribe(info => {
       this.rol = info.roles[0];
     });
   }
@@ -105,7 +127,7 @@ export class SidebarComponent implements OnInit {
       routeLink: 'tables',
       icon: 'fa-solid fa-chair',
       label: 'Mesas',
-      roles: ['admin', 'gerente','cajero']
+      roles: ['admin', 'gerente', 'cajero']
     },
 
     {
@@ -113,21 +135,21 @@ export class SidebarComponent implements OnInit {
       routeLink: 'sales',
       icon: 'fa-solid fa-money-check-dollar',
       label: 'Pedidos',
-      roles: ['admin', 'gerente', 'cajero','cliente', 'repartidor']
+      roles: ['admin', 'gerente', 'cajero', 'cliente', 'repartidor']
     },
     {
       number: '4',
       routeLink: 'products',
       icon: 'fa-solid fa-ice-cream',
       label: 'Productos',
-      roles: ['admin', 'gerente','cajero']
+      roles: ['admin', 'gerente', 'cajero']
     },
     {
       number: '4',
       routeLink: 'complaints',
       icon: 'fa-solid fa-circle-exclamation',
       label: 'Recomendaciones',
-      roles: ['admin', 'gerente','cliente']
+      roles: ['admin', 'gerente', 'cliente']
     },
     {
       number: '5',
@@ -137,7 +159,7 @@ export class SidebarComponent implements OnInit {
       roles: ['admin', 'gerente']
     },
 
-    
+
 
     {
       number: '6',
@@ -186,9 +208,13 @@ export class SidebarComponent implements OnInit {
   }
 
   logout() {
-    if (confirm(`¿Deseas cerrar sesión?`)) {
-      this.authService.logout();
-      this.router.navigateByUrl('/');
-    }
+    this.dialog = new window.bootstrap.Modal(
+      document.getElementById("logoutDialog")
+    );
+    this.dialog.show();
+  }
+  autoLogout() {
+    this.authService.logout();
+    this.router.navigateByUrl('/');
   }
 }

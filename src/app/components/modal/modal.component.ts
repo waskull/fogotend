@@ -8,12 +8,13 @@ import { ClientformComponent } from '../clientform/clientform.component';
 import { ComplaintformComponent } from '../complaintform/complaintform.component';
 import { TablesaleformComponent } from '../tablesaleform/tablesaleform.component';
 import { AuthService } from '../../services/auth/auth.service';
+import { Rol } from '../../constants/Enum';
 declare var window: any;
 
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [UserformComponent, ProductformComponent,TablesaleformComponent,ComplaintformComponent, SaleformComponent, OrderformComponent,ClientformComponent, CommonModule],
+  imports: [UserformComponent, ProductformComponent,TablesaleformComponent,ComplaintformComponent, SaleformComponent, OrderformComponent,ClientformComponent],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss'
 })
@@ -23,6 +24,7 @@ export class ModalComponent {
   @Input() modalId = 'modal';
   @Output() emitData = new EventEmitter<any>();
   formModal: any;
+  DELIVERY_MAN = Rol.DELIVERY_MAN
   @Input() userForm: boolean = false;
   @Input() clientForm: boolean = false;
   @Input() productForm: boolean = false;

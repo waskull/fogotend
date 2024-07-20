@@ -25,6 +25,7 @@ export class ClientformComponent {
   @Output() emitForm = new EventEmitter<any>();
   @Output() editUser = new EventEmitter<any>();
   @Input() userData!: any;
+  sending: boolean = false;
   userForm!: FormGroup;
   editing: boolean = false;
   error: string = '';
@@ -57,6 +58,7 @@ export class ClientformComponent {
     return d;
   }
   sendData() {
+    this.sending = true;
     let client: IClient = {
       firstname: this.userForm.value.firstname,
       lastname: this.userForm.value.lastname,
@@ -72,6 +74,7 @@ export class ClientformComponent {
       const id: number = this.userData?.id;
       this.userService.update(client, this.userData?.id).pipe(
         catchError(err => {
+          this.sending = false;
           if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
           else {
             this.error = err?.error?.message || 'Error al Editar el Usuario';
@@ -84,12 +87,14 @@ export class ClientformComponent {
         client.id = id;
         client.email = this.userForm.value.email;
         this.editUser.emit(client);
+        this.sending = false;
       });
     }
     else {
       delete client?.id;
       this.userService.createClient(client).pipe(
         catchError(err => {
+          this.sending = false;
           if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
           else {
             this.error = err?.error?.message || 'Error al Crear el Usuario';
@@ -103,6 +108,7 @@ export class ClientformComponent {
         this.userForm.reset();
         this.userForm.patchValue({gender: 'Femenino'});
         this.emitForm.emit(newUser);
+        this.sending = false;
       });
     }
   }

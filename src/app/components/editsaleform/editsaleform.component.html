@@ -1,105 +1,173 @@
 <form (ngSubmit)="sendData()" [formGroup]="dataForm">
-    <ol class="list-group ">
-        <li class="list-group-item  justify-content-between align-items-start" *ngFor="let i of selectedItems">
-            <div class="row ">
-                <div class="fw-bold col-auto me-auto">{{i?.name}} {{i?.price}}$</div>
+    <div class="row">
+        @for (i of selectedItems; track $index) {
+
+        <section class="col me-2">
+
+            <div class="row justify-content-start">
+                <div class="col list-group-item">
+                    <div class="card shadow widget-card border-dark-subtle shadow-sm mb-2 ms-2">
+                        <div class="card-body ps-4">
+                            <div class="row">
+                                <div class="col"
+                                    style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                    <h6 style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                        class="card-title widget-card-title mb-2 text-uppercase text-break">
+                                        {{i.name}}</h6>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <div
+                                                        class="fs-5 bsb-w-50 bsb-h-50 bg-primary-subtle text-primary rounded-2 d-flex align-items-center justify-content-between me-3">
+                                                        <div>
+                                                            <img src="{{baseURL}}/{{i?.image}}" alt="{{i.name}}"
+                                                                class="square">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <h6>Precio: {{i.price}}$</h6>
+                                                    <p class="text-success m-0 fs-7">Cantidad: {{i.qty}}</p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            Cantidad: <span class="text-default">{{i?.qty}}</span>
 
-        </li>
-    </ol>
-    <div class="row">
-        <div class="mb-3 form-floating form-group col mt-1">
-            <label for="client" class="col-form-label py-1 px-4">Cliente:</label>
-            <input class="form-control" type="text" name="client" [value]="data?.client" disabled>
-        </div>
-        <div class="mb-3 mt-1 form-floating form-group col">
-            <label for="price" class="col-form-label py-1 px-4">Total:</label>
-            <input type="number" class="form-control" [value]="data?.price" id="price" disabled>
-        </div>
+        </section>
+
+        }
     </div>
-
     <div class="row">
-        <div class="mb-3 form-floating form-group col mt-1">
-            <label for="clientp" class="col-form-label py-1 px-4">Telefono del cliente:</label>
-            <input class="form-control" type="text" name="clientp" [value]="data?.clientPhone" disabled>
-        </div>
+
         <div class="mb-3 form-floating form-group col mt-1">
             <label for="st" class="col-form-label py-1 px-4">Estado:</label>
             <input class="form-control" type="text" name="st" [value]="data?.status" disabled>
         </div>
+        <div class="mb-3 mt-1 form-floating form-group col">
+            <label for="price" class="col-form-label py-1 px-4">Total:</label>
+            <input type="text" class="form-control" style="font-weight: bold;" [value]="data?.price+'$'" id="price" disabled>
+        </div>
     </div>
-    
+
+    <div class="row">
+        @if (data?.status !== STATUS_COMPLETED_TABLE) {
+        <div class="mb-3 form-floating form-group col mt-1">
+            <label for="client" class="col-form-label py-1 px-4">Cliente:</label>
+            <input class="form-control" type="text" name="client" [value]="data?.client" disabled>
+        </div>
+        <div class="mb-3 form-floating form-group col mt-1">
+            <label for="clientp" class="col-form-label py-1 px-4">Telefono del cliente:</label>
+            <input class="form-control" type="text" name="clientp" [value]="data?.clientPhone" disabled>
+        </div>
+        }
+
+    </div>
+
     <div class="row">
         <div class="mb-3 form-floating form-group col mt-1">
             <label for="methodPayment" class="col-form-label py-1 px-4">Metodo de pago:</label>
             <input class="form-control" type="text" name="methodPayment" [value]="data?.paymentMethod" disabled>
         </div>
+        @if (data?.paymentMethod !== CASH && data?.pay_code) {
         <div class="mb-3 form-floating form-group col mt-1">
             <label for="pay_code" class="col-form-label py-1 px-4">Referencia de pago:</label>
             <input class="form-control" type="text" name="pay_code" [value]="data?.pay_code" disabled>
-        </div>
+        </div> }
     </div>
-    @if (!show) {
-    <div class="mb-3 form-floating form-group col mt-1">
-        <label for="delivery_man" class="col-form-label py-1 px-2">Selecciona el repartidor:</label>
-        <select class="form-select" aria-label="Seleccion de Rol" name="delivery_man" id="delivery_man"
-            formControlName="delivery_man">
-            <option selected value="">Selecciona un repartidor</option>
-            <option *ngFor="let delivery_man of deliveryList" [value]="delivery_man.id">{{delivery_man?.firstname}}
-                {{delivery_man?.lastname}}
-            </option>
-        </select>
-        <div *ngIf="dataForm.get('delivery_man')?.touched && dataForm.get('delivery_man')?.errors?.['required']"
-            class="alert mt-3 alert-danger">El repartidor es requerido.</div>
-    </div>
-    }
 
     <div class="row">
         <div class="mb-3 mt-1 form-floating form-group col">
             <label for="date" class="col-form-label py-1 px-4">Fecha de solicitud:</label>
             <input type="text" class="form-control" [value]="data?.date" id="date" disabled>
         </div>
-        @if (data?.status === STATUS_COMPLETED || data?.status === STATUS_WAITING || data?.status === STATUS_COMPLETED_TABLE) {
-            <div class="mb-3 mt-1 form-floating form-group col">
-                <label for="payment_date" class="col-form-label py-1 px-4">Fecha de pago:</label>
-                <input type="text" class="form-control" [value]="data?.payment_date" id="payment_date" disabled>
-            </div>
+        @if (data?.status === STATUS_COMPLETED || data?.status === STATUS_WAITING || data?.status ===
+        STATUS_COMPLETED_TABLE) {
+        <div class="mb-3 mt-1 form-floating form-group col">
+            <label for="payment_date" class="col-form-label py-1 px-4">Fecha de pago:</label>
+            <input type="text" class="form-control" [value]="data?.payment_date" id="payment_date" disabled>
+        </div>
         }
 
     </div>
-
-    
-
-    @if (data?.status === 'Producto entregado') {
-        <div class="row">
-            <div class="mb-3 mt-1 form-floating form-group col-6">
-                <label for="address" class="col-form-label py-1 px-4">Direccion:</label>
-                <textarea type="text" class="form-control" [value]="data?.address" id="address" disabled></textarea>
-            </div>
-                <div class="mb-3 mt-1 form-floating form-group col-6">
-                    <label for="payment_date" class="col-form-label py-1 px-4">Confirmación de entrega:</label>
-                        <input type="text" class="form-control" [value]="data?.delivered" id="payment_date" disabled>
-                </div>
+    @if(data?.status === STATUS_WAITING || data?.status === STATUS_COMPLETED){
+    <div class="row">
+        <div class="mb-3 mt-1 form-floating form-group col">
+            <label for="delivery" class="col-form-label py-1 px-4">Repartidor: </label>
+            <input type="text" name="delivery" class="form-control" [value]="data?.delivery_man" id="delivery" disabled>
         </div>
-    }
-    @else {
-        <div class="row">
-            <div class="mb-3 mt-1 form-floating form-group col">
-                <label for="address" class="col-form-label py-1 px-4">Direccion:</label>
-                <textarea type="text" class="form-control" [value]="data?.address" id="address" disabled></textarea>
-            </div>
+        @if (data?.salesman) {
+        <div class="mb-3 mt-1 form-floating form-group col">
+            <label for="salesman" class="col-form-label py-1 px-4">Aprobado por: </label>
+            <input type="text" name="salesman" class="form-control" [value]="data?.salesman" id="salesman" disabled>
         </div>
+        }
+    </div>
     }
-    <span *ngIf="error" class="text-danger px-1">{{error}}</span>
+    @if (data?.status === STATUS_COMPLETED) {
+    <div class="row">
+        <div class="mb-3 mt-1 form-floating form-group col-6">
+            <label for="address" class="col-form-label py-1 px-4">Direccion:</label>
+            <textarea type="text" class="form-control" [value]="data?.address" id="address" disabled></textarea>
+        </div>
+        <div class="mb-3 mt-1 form-floating form-group col-6">
+            <label for="payment_date" class="col-form-label py-1 px-4">Confirmación de entrega:</label>
+            <input type="text" class="form-control" [value]="data?.delivered" id="payment_date" disabled>
+        </div>
+    </div>
+    }
+    @if(data?.status !== STATUS_COMPLETED_TABLE) {
+    <div class="row">
+        <div class="mb-3 mt-1 form-floating form-group col">
+            <label for="address" class="col-form-label py-1 px-4">Direccion:</label>
+            <textarea type="text" class="form-control" [value]="data?.address" id="address" disabled></textarea>
+        </div>
+    </div>
+    }
+
+    @if (!show) {
+    <label for="delivery" class="col-form-label py-1 px-2">Selecciona el repartidor:</label>
+    <div class="form-floating form-group col mt-1">
+        <ng-select class="custom" formControlName="delivery_man" placeholder="Selecciona el repartidor"
+            [clearable]="false" [closeOnSelect]="true" [searchable]="true" notFoundText="Repartidor no encontrado">
+            @for (dm of deliveryList; track dm.id) {
+            <ng-option [value]="dm.id">{{dm.firstname}} {{dm.lastname}}</ng-option>
+            }
+        </ng-select>
+        <div *ngIf="dataForm.get('delivery_man')?.touched && dataForm.get('delivery_man')?.errors?.['required']"
+            class="alert mt-3 alert-danger">El repartidor es requerido.</div>
+    </div>
+    }
+
+    @if (error) {
+    <span class="text-danger px-1">{{error}}</span>
+    }
     <div class="py-2"></div>
-    <div class="modal-footer">
+    <div class="modal-footer d-flex justify-content-between">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
             Cerrar
         </button>
 
-        <button type="button" class="btn btn-primary" type="submit" [hidden]="show" [disabled]="dataForm.invalid">
-            Confirmar pedido
+        <button type="button" class="btn btn-primary" type="submit" [hidden]="show"
+            [disabled]="dataForm.invalid || sending">
+            @if (sending) {
+            <span role="status">Aprobando pedido...</span>
+            <span class="spinner-border spinner-border-sm ms-1" aria-hidden="true"></span>
+            }
+            @else {
+            <span role="status">Aprobar pedido</span>
+            }
         </button>
 
     </div>

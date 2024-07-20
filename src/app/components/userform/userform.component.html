@@ -102,14 +102,27 @@
         Cerrar
       </button>
       @if (userData) {
-      <button type="button" class="btn btn-primary" type="submit" [disabled]="userForm.invalid">
-        Editar
+      <button type="button" class="btn btn-primary" type="submit" [disabled]="userForm.invalid || sending">
+        @if (sending) {
+          <span class="spinner-border spinner-border-sm ms-1" aria-hidden="true"></span>
+          <span role="status">Editando...</span>
+        }
+        @else {
+          <span role="status">Editar empleado</span>
+        }
       </button>
       }
       @else {
-      <button type="button" class="btn btn-primary" type="submit" [disabled]="userForm.invalid">
-        Crear
+      <button type="button" class="btn btn-primary" type="submit" [disabled]="userForm.invalid || sending">
+        @if (sending) {
+          <span class="spinner-border spinner-border-sm ms-1" aria-hidden="true"></span>
+          <span role="status">Creando...</span>
+        }
+        @else {
+          <span role="status">Crear empleado</span>
+        }
       </button>
+      
       }
 
 

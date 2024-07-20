@@ -7,13 +7,14 @@ import { UserService } from '../../services/user.service';
 import { Method } from '../../constants/Enum';
 import { OnlynumbersDirective } from '../../onlynumbers.directive';
 import { ProductService } from '../../services/product.service';
-// import { ClientService } from '../../services/client.service';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../services/auth/auth.service';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { ClientService } from '../../services/client.service';
 @Component({
   selector: 'tablesaleform',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NgSelectModule],
   templateUrl: './tablesaleform.component.html',
   styleUrl: './tablesaleform.component.scss'
 })
@@ -22,6 +23,7 @@ export class TablesaleformComponent {
   @Input() data!: any;
   dataForm!: FormGroup;
   editing: boolean = false;
+  sending:boolean = false;
   error: string = '';
   fb = inject(FormBuilder);
   productService = inject(ProductService);
@@ -32,9 +34,11 @@ export class TablesaleformComponent {
   inventoryList: any[] = [];
   deliveryList: any[] = [];
   selectedItems: any[] = [];
+  clientList: any[] = [];
   total: number = 0;
   subtotal:number = 0;
   userService = inject(UserService);
+  clientService = inject(ClientService)
   baseURL = environment.baseURL;
 
   
@@ -42,6 +46,19 @@ export class TablesaleformComponent {
   ngOnInit(): void {
     this.dataForm = this.initForm();
     this.loadFormData();
+  }
+  add(i:any){
+    let item = this.inventoryList.find(x => x.id === i);
+    let t = false;
+    this.selectedItems.forEach(e => {
+      if (e.id === item.id) t = true;
+    });
+    if (!t) {
+      item.quantity = 1;
+      this.selectedItems.push(item);
+      this.calculateTotal();
+    }
+    this.dataForm.patchValue({ quantity: 1 });
   }
 
   addItem(item: any) {
@@ -106,19 +123,13 @@ export class TablesaleformComponent {
     this.total = this.subtotal;
   }
 
-  calculateDelivery():number{
-    if(this.total < 30 ){return this.total+=4;}
-    else if(this.total >= 30 && this.total<60){return this.total+=2;}
-    else{return this.total}
-  }
-
   loadFormData() {
     this.productService.getAllProducts().subscribe(res => {
       this.inventoryList = res;
     });
-    // this.clientService.getAll().subscribe(res => {
-    //   this.clientList = res;
-    // });
+    this.clientService.getAll().subscribe(res => {
+      this.clientList = res;
+    });
     this.userService.getAllDelivery().subscribe(res => {
       this.deliveryList = res;
     });
@@ -126,10 +137,11 @@ export class TablesaleformComponent {
   initForm(): FormGroup {
     const d = this.fb.group({
      // delivery_man: [0, [Validators.required, Validators.min(1)]],
-      item: [0, [Validators.required, Validators.min(1)]],
+      item: [undefined, [Validators.required, Validators.min(1)]],
       pay_code: ['', [Validators.minLength(1), Validators.maxLength(4)]],
       quantity: [1, [Validators.required, Validators.min(1)]],
       paymentMethod: ['', [Validators.required, Validators.minLength(2)]],
+      // client: [undefined, Validators.required, Validators.min(1)]
     });
     if (this.data) {
       this.editing = true;
@@ -141,6 +153,12 @@ export class TablesaleformComponent {
     this.dataForm.patchValue({pay_code:''});
   }
   sendData() {
+    this.sending = true;
+    if(this.dataForm.value.pay_code.length < 1 && this.dataForm.value.paymentMethod !== this.methods.Cash){
+      this.error = "Debes proveer una referencia de pago";
+      this.sending = false;
+      return;
+    }
     let tmpList: any[] = [];
     this.selectedItems.forEach(e => {
       tmpList.push({
@@ -153,11 +171,13 @@ export class TablesaleformComponent {
       table: this.data.id,
       //delivery_man: this.dataForm.value.delivery_man,
       paymentMethod: this.dataForm.value.paymentMethod,
+      // client: this.dataForm.value.client,
       pay_code: this.dataForm.value.paymentMethod  === this.methods.Cash ? [] : [this.dataForm.value.pay_code],
     };
     
     this.salesService.createSale(Data).pipe(
       catchError(err => {
+        this.sending = false;
         if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
         else {
           this.error = err?.error?.message || 'Error al Crear la venta';
@@ -171,6 +191,7 @@ export class TablesaleformComponent {
       this.emitForm.emit(Data);
       this.dataForm.reset();
       this.selectedItems = [];
+      this.sending = false;
     });
 
   }

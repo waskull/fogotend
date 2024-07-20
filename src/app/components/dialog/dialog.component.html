@@ -1,0 +1,162 @@
+@if(isTable){
+<div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" [id]="id+'Table'" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-sm-start bg-dark text-white">
+            <div class="modal-header border border-black border-bottom">
+                <h5 class="modal-title" id="exampleModalLabel">{{header}}</h5>
+            </div>
+            <div class="modal-body text-justify">
+
+                <h6 class="mb-3">Presione confirmar para liberar esta mesa</h6>
+
+
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex justify-content-end">
+
+                    <button data-bs-dismiss="modal" aria-label="Close"
+                        class="btn btn-secondary ms-2 me-2">Cancelar</button>
+                    <button (click)="emit()" class="btn btn-success">Confirmar</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+@else if(userConfirm){
+<div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" [id]="id+'UserConfirm'" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content text-sm-start bg-dark text-white">
+            <div class="modal-header border border-black border-bottom">
+                <h4 class="modal-title" id="exampleModalLabel">Confirmar entrega</h4>
+            </div>
+            <div class="modal-body text-justify">
+                @if(message){
+                Haga click en el boton aceptar para confirmar que {{row?.delivery_man}} le ha entregado su pedido
+
+                }
+
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex justify-content-end">
+
+                    <button data-bs-dismiss="modal" aria-label="Close"
+                        class="btn btn-secondary ms-2 me-2">Cancelar</button>
+                    <button (click)="emit()" class="btn btn-success">Aceptar</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+@else if(clientCancel){
+<div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" [id]="id+'Cancel'" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-sm-start bg-dark text-white">
+            <div class="modal-header border border-black border-bottom">
+                <h5 class="modal-title" id="exampleModalLabel">{{header}}</h5>
+
+            </div>
+            <div class="modal-body text-justify">
+                @if(message){
+                <h6 class="mb-3">{{message}}</h6>
+                }
+
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex justify-content-end">
+
+                    <button data-bs-dismiss="modal" aria-label="Close"
+                        class="btn btn-secondary ms-2 me-2">Cerrar</button>
+                    <button (click)="emit()" class="btn btn-danger">Cancelar pedido</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+@else if(logout){
+    <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="logoutDialog" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-sm-start bg-dark text-white">
+                <div class="modal-header border border-black border-bottom">
+                    <h5 class="modal-title" id="exampleModalLabel">¿Deseas cerrar la sesión?</h5>
+                </div>
+                <div class="modal-body text-justify">
+                    <h6 class="mb-3">Presiona Cerrar sesión para salir del sistema.</h6>
+    
+                </div>
+                <div class="modal-footer">
+                    <div class="d-flex justify-content-end">
+                        <button data-bs-dismiss="modal" aria-label="Close"
+                            class="btn btn-secondary ms-2 me-2">Cerrar</button>
+                        <button (click)="emit()" class="btn btn-warning text-dark">Cerrar sesión</button>
+    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+@else if(!delete){
+<div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" [id]="id+'Dialog'" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-sm-start bg-dark text-white">
+            <div class="modal-header border border-black border-bottom">
+                <h5 class="modal-title" id="exampleModalLabel">{{header}}</h5>
+            </div>
+
+            <div class="modal-body text-justify">
+                @if(message){
+                <h6 class="mb-3">{{message}}</h6>
+                }
+
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex justify-content-end">
+
+                    <button data-bs-dismiss="modal" aria-label="Close"
+                        class="btn btn-secondary ms-2 me-2">Cancelar</button>
+                    <button (click)="emit()" class="btn btn-success">Confirmar</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+@else{
+<div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" [id]="id+'DeleteDialog'" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-sm-start bg-dark text-white">
+            <div class="modal-header border border-black border-bottom">
+                <h5 class="modal-title" id="exampleModalLabel">{{header}}</h5>
+            </div>
+            <div class="modal-body text-justify">
+                @if(message){
+                <h6 class="mb-3">{{message}}</h6>
+                }
+
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex justify-content-end">
+                    <button data-bs-dismiss="modal" aria-label="Close"
+                        class="btn btn-secondary ms-2 me-2">Cancelar</button>
+                    <button (click)="emit()" class="btn btn-danger">Eliminar</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}

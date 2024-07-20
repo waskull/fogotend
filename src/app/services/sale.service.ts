@@ -53,7 +53,7 @@ export class SaleService {
     return this.httpClient.get<any>(`${this.baseURL}/sale/stats`);
   }
 
-  public getLastFourBills() {
+  public getLastFourSales() {
     return this.httpClient.get<any[]>(`${this.baseURL}/sale/lastfour`);
   }
 
