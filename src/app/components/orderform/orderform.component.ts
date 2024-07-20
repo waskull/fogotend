@@ -21,6 +21,7 @@ export class OrderformComponent implements OnInit {
   editing: boolean = false;
   error: string = '';
   purchaseData!: any;
+  sending: boolean = false;
   inventoryList: any[] = [];
   selectedItems: any[] = [];
   orderService = inject(OrderService);
@@ -59,7 +60,6 @@ export class OrderformComponent implements OnInit {
 
   addItem(item: any) {
     item = JSON.parse(item);
-    console.log(item, typeof item);
     let t = false;
     this.selectedItems.forEach(e => {
       if (e.id === item.id) t = true;
@@ -78,7 +78,6 @@ export class OrderformComponent implements OnInit {
   loadFormData() {
     this.productService.getAllProducts().subscribe(res => {
       this.inventoryList = res;
-      console.log(res);
     });
     if(this.show){this.dataForm.controls.price.disable();}
   }
@@ -95,6 +94,7 @@ export class OrderformComponent implements OnInit {
     return d;
   }
   sendData() {
+    this.sending = true;
     let tmpList: any[] = [];
     this.selectedItems.forEach(e => {
       tmpList.push({
@@ -109,6 +109,7 @@ export class OrderformComponent implements OnInit {
 
     this.orderService.create(Data).pipe(
       catchError(err => {
+        this.sending = false;
         if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
         else {
           this.error = err?.error?.message || 'Error al Crear la compra';
@@ -120,6 +121,7 @@ export class OrderformComponent implements OnInit {
       this.emitForm.emit(Data);
       this.dataForm.reset();
       this.selectedItems = [];
+      this.sending = false;
     });
 
   }

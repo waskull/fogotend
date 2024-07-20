@@ -1,0 +1,9 @@
+.modal.fade .modal-dialog .fade { 
+    transition: transform 0.3s ease-out; 
+    transform: scale(1.5); 
+    // transform: rotate(75def) !important;
+  }
+
+.fade{
+    transform: scale(1.1); 
+}

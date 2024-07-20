@@ -1,14 +1,13 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { AuthService } from '../../../services/auth/auth.service';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-password',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './password.component.html',
   styleUrl: './password.component.scss'
 })

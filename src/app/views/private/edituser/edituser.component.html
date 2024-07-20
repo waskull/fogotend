@@ -101,8 +101,14 @@
                   <button type="button" class="btn btn-danger me-2" (click)="cancel()" routerLink="dashboard">
                     Cancelar
                   </button>
-                    <button type="button" class="btn btn-primary" type="submit" [disabled]="userForm.invalid || userForm.get('pass2').value !== userForm.get('pass').value">
-                      Editar Usuario
+                    <button type="button" class="btn btn-primary" type="submit" [disabled]="userForm.invalid || userForm.get('pass2').value !== userForm.get('pass').value || sending">
+                      @if (sending) {
+                        <span class="spinner-border spinner-border-sm ms-1" aria-hidden="true"></span>
+                        <span role="status">Editando mi usuario...</span>
+                      }
+                      @else {
+                        <span role="status">Editar mi usuario</span>
+                      }
                     </button>
                   
                   

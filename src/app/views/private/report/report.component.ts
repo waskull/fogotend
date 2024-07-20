@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DpDatePickerModule, IDatePickerConfig } from 'ng2-date-picker';
 import { default as dayjs } from 'dayjs';
 import 'dayjs/locale/es-mx';
+import { catchError, throwError } from 'rxjs';
 import { saveAs } from 'file-saver';
 import { DEF_CONF } from '../../../constants/DatePicker';
 import { HeaderComponent } from '../../../components/header/header.component';
@@ -31,6 +32,8 @@ export default class ReportComponent implements OnInit{
     format: 'YYYY-MM-DD'
   };
   option: string = 'orders';
+  error:string = '';
+  sending:boolean = false;
   buttonText: string = 'Compras';
   saleService = inject(SaleService);
   orderService = inject(OrderService);
@@ -43,16 +46,37 @@ export default class ReportComponent implements OnInit{
     this.authService.setModuleName('Reportes');    
   }
   getRows() {
+    this.sending = true;
     if (this.option === 'orders') {
       this.buttonText = 'Compras';
-      this.orderService.getReport(this.start, this.end).subscribe((e:Blob) => {
+      this.orderService.getReport(this.start, this.end).pipe(
+        catchError(err => {
+          this.sending = false;
+          if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
+          else {
+            this.error = err?.error?.message || 'Error al generar el reporte de compra';
+          }
+          return throwError(() => err);
+        })
+      ).subscribe((e:Blob) => {
         saveAs(e, 'reporteCompras.pdf');
+        this.sending = false;
       });
     }
     else if (this.option === 'sales') {
       this.buttonText = 'Pedidos';
-      this.saleService.getSalesByDate(this.start, this.end).subscribe((e:Blob) => {
+      this.saleService.getSalesByDate(this.start, this.end).pipe(
+        catchError(err => {
+          this.sending = false;
+          if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
+          else {
+            this.error = err?.error?.message || 'Error al generar el reporte de pedido';
+          }
+          return throwError(() => err);
+        })
+      ).subscribe((e:Blob) => {
         saveAs(e, 'reportePedidos.pdf');
+        this.sending = false;
       });
     }
     else {

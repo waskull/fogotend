@@ -98,8 +98,14 @@
         </ng-container>
         <ng-template #elseTemplate>
             <button type="button" class="btn btn-primary" type="submit"
-                [disabled]="dataForm.invalid || selectedItems.length < 1">
-                Crear
+                [disabled]="dataForm.invalid || selectedItems.length < 1 || sending">
+                @if (sending) {
+                    <span role="status">Registrando compra...</span>
+                    <span class="spinner-border spinner-border-sm ms-1" aria-hidden="true"></span>
+                  }
+                  @else {
+                    <span role="status">Registrar compra</span>
+                  }
             </button>
         </ng-template>
     </div>

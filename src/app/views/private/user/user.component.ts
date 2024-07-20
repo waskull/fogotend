@@ -7,7 +7,7 @@ import { ModalComponent } from '../../../components/modal/modal.component';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth.service';
-
+import { catchError, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-user',
@@ -25,6 +25,8 @@ export default class UserComponent implements OnInit {
   userData: any[] = [];
   authService = inject(AuthService);
   datepipe = new DatePipe('en-US');
+  loading:boolean = false;
+  error:string = '';
   ngOnInit() {
     this.authService.setModuleName('Empleados');
     this.loadData();
@@ -48,13 +50,24 @@ export default class UserComponent implements OnInit {
   }
 
   loadData() {
-    this.userService.getAllByRol(this.filter).subscribe((res) => {
+    this.loading = true;
+    this.userService.getAllByRol(this.filter).pipe(
+      catchError(err => {
+        this.loading = false;
+        if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
+        else {
+          this.error = err?.error?.message || 'Error al obtener los empleados';
+        }
+        return throwError(() => err);
+      })
+    ).subscribe((res) => {
 
       res.forEach((u) => {
         u.idd = u.id < 10 ? `#0${u.id}` : `#${u.id}`;
         u.age = `${u.birthdate} (${this.calculateAge(u.birthdate)} años)`
       });
       this.userData = res;
+      this.loading = false;
     });
 
   }

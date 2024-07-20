@@ -5,6 +5,8 @@ body {
   margin: 0;
 }
 
+
+
 .navlink{
   font-size: large;
   cursor: pointer;
@@ -177,6 +179,16 @@ $offcanvas-bg-color: #151515;
 .pading{
   padding-right: 10px;
   text-overflow: clip;
+}
+
+.link{
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fefefe;
+  position: relative;
+  transition: color 0.25s;
 }
 
 // @media screen and (max-width: 450px) {

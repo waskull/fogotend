@@ -9,16 +9,20 @@ import { FormsModule } from '@angular/forms';
 import { TablesaleformComponent } from '../../../components/tablesaleform/tablesaleform.component';
 import { AuthService } from '../../../services/auth/auth.service';
 import { catchError, throwError } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { DialogComponent } from '../../../components/dialog/dialog.component';
 declare var window: any;
+
 @Component({
   selector: 'tables',
   standalone: true,
-  imports: [ModalComponent, HeaderComponent, TableComponent, DatePipe, FormsModule,
+  imports: [ModalComponent, HeaderComponent, TableComponent, DatePipe, FormsModule, DialogComponent,
     FilterPipe,TablesaleformComponent],
   templateUrl: './tables.component.html',
   styleUrl: './tables.component.scss'
 })
 export default class TablesComponent {
+  baseURL:string = environment.baseURL;
   columnNames = ['idd', 'nombre', 'capacidad', 'disponibilidad']
   columns = ['idd', 'name', 'capacity', 'available'];
   op = { delete: false, edit: false, show: true }
@@ -31,6 +35,7 @@ export default class TablesComponent {
   search:string = '';
   authService = inject(AuthService);
   ff: any;
+  dialog: any;
   constructor() { }
 
   ngOnInit(): void {
@@ -50,12 +55,12 @@ export default class TablesComponent {
         this.loading = false;
         if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
         else {
-          this.error = err?.error?.message || 'Error al obtener los datos';
+          this.error = err?.error?.message || 'Error al obtener las mesas';
         }
         return throwError(() => err);
       })
     ).subscribe(res => {
-      this.loading = false;console.log(res);
+      this.loading = false;
       res.forEach(e => {
         this.tableList.push({
           idd: e.id < 10 ? `#0${e.id}` : `#${e.id}`,
@@ -88,16 +93,25 @@ export default class TablesComponent {
   reload() {
     this.loadData();
   }
-
-  confirm(id:number){
-    if(confirm('¿Estas seguro de querer liberar esta mesa?')){
-      this.tableService.cancel(id).subscribe((res) => {
-        this.loadData();
-      });
-      
-    }
+  clean(){
+    this.search = '';
+  }
+  release(data: any){
+    this.tableService.cancel(data.id).subscribe((res) => {
+      this.dialog.hide();
+      this.loadData();
+    });
   }
 
+  confirm(id:number){
+    this.openDialog(id.toString());
+  }
+  openDialog(id: string) {
+    this.dialog = new window.bootstrap.Modal(
+      document.getElementById(id+"Table")
+    );
+    this.dialog.show();
+  }
   show(id: number){
     this.ff = new window.bootstrap.Modal(
       document.getElementById(id.toString())

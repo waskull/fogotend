@@ -47,8 +47,15 @@
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
             Cerrar
         </button>
-        <button type="button" class="btn btn-primary" type="submit" [disabled]="dataForm.invalid">
-            Crear
+        <button type="button" class="btn btn-primary" type="submit" [disabled]="dataForm.invalid || sending">
+            @if (sending) {
+                <span role="status">Registrando {{dataForm.get('type')?.value}}...</span>
+
+                <span class="spinner-border spinner-border-sm ms-1" aria-hidden="true"></span>
+              }
+              @else {
+                <span role="status">Registrar {{dataForm.get('type')?.value}}</span>
+              }
         </button>
 
 
@@ -147,8 +154,14 @@
         @if (data) {
         @if (!show) {
         <button type="button" class="btn btn-primary" type="submit"
-            [disabled]="dataForm.invalid || complaintForm.invalid">
-            Confirmar reclamo
+            [disabled]="dataForm.invalid || complaintForm.invalid || sending">
+            @if (sending) {
+                <span role="status">{{complaintForm.get('complaintStatus')?.value === COMPLAINT_ACCEPTED ? 'Aprobando...' : 'Rechazando...'}}</span>
+                <span class="spinner-border spinner-border-sm ms-1" aria-hidden="true"></span>
+              }
+              @else {
+                <span role="status">{{complaintForm.get('complaintStatus')?.value === COMPLAINT_ACCEPTED ? 'Aprobar' : 'Rechazar'}}</span>
+              }
         </button>
         }
         }

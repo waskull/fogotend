@@ -1,10 +1,14 @@
-::view-transition-old(root) {
-  animation: exit 1s ease 0s 1 normal forwards;
-}
+@import url("./assets/css/bootstrap.min.css");
+@import url("./assets/css/all.min.css");
+@import "../node_modules/@ng-select/ng-select/themes/default.theme.css";
 
-::view-transition-new(root) {
-  animation: enter 1s ease 0s 1 normal forwards;
-}
+// ::view-transition-old(root) {
+//   animation: exit 1s ease 0s 1 normal forwards;
+// }
+
+// ::view-transition-new(root) {
+//   animation: enter 1s ease 0s 1 normal forwards;
+// }
 
 .blur{
     backdrop-filter: blur(8px);
@@ -13,29 +17,29 @@
     filter: blur(5px);
   }
 
-@keyframes enter {
-  from {
-    opacity: 0;
-    transform: translateY(-50px);
-  }
+// @keyframes enter {
+//   from {
+//     opacity: 0;
+//     transform: translateY(-50px);
+//   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0)
-  }
-}
+//   to {
+//     opacity: 1;
+//     transform: translateY(0)
+//   }
+// }
 
-@keyframes exit {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
+// @keyframes exit {
+//   from {
+//     opacity: 1;
+//     transform: scale(1);
+//   }
 
-  to {
-    opacity: 0;
-    transform: scale(0.6);
-  }
-}
+//   to {
+//     opacity: 0;
+//     transform: scale(0.6);
+//   }
+// }
 
 @import '@angular/cdk/overlay-prebuilt.css';
 
@@ -90,9 +94,7 @@ $PRIMARY: #2c2e34;
   background-color: $PRIMARY !important;
 }
 
-.bg-dark {
-  background-color: $DARK !important;
-}
+
 
 .primary {
   color: $PRIMARY !important;
@@ -248,6 +250,23 @@ body {
 .text-default {
   color: $PRIMARY !important;
 }
+
+
+
+.text-green{
+	color: white;
+	background-color: green;
+}
+
+.text-blue{
+	color:white;
+	background-color: blue;
+}
+
+.text-redd {
+	color: white;
+	background-color: red;
+  }
 
 .text-red {
   color: $RED !important;
@@ -476,7 +495,6 @@ body {
 
 	/* Navigation */
 	.navbar {
-		padding-top: 1.75rem;
 		background-color: #fcfafb;
 		box-shadow: none;
 		transition: all 0.2s;
@@ -512,10 +530,7 @@ body {
 		margin-bottom: 0;
 	}
 	
-	.navbar .nav-item .nav-link {
-		padding-right: 0.75rem;
-		padding-left: 0.75rem;
-	}
+	
 
 	.navbar .dropdown-menu {
 		padding-top: 0.75rem;
@@ -534,29 +549,7 @@ body {
 	/* end of navigation */
 
 
-	/* Header */
-	.header {
-		text-align: left;
-	}
-
-	.header .text-container {
-		margin-top: 4rem;
-	}
-
-	.header .image-container {
-		margin-top: 0;
-	}
-
-	.header .btn-solid-lg,
-	.header .btn-outline-lg {
-		margin-right: 0;
-		margin-left: 0;
-	}
 	
-	.header .btn-solid-lg {
-		margin-right: 0.5rem;
-	}
-	/* end of header */
 
 
 	/* Services */
@@ -665,3 +658,4 @@ body {
 	/* end of extra pages */
 }
 /* end of min-width 992px */
+

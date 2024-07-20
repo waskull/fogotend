@@ -5,6 +5,7 @@ import { ModalComponent } from '../../../components/modal/modal.component';
 import { TableComponent } from '../../../components/table/table.component';
 import { HeaderComponent } from "../../../components/header/header.component";
 import { AuthService } from '../../../services/auth/auth.service';
+import { catchError, throwError } from 'rxjs';
 
 @Component({
     selector: 'app-order',
@@ -19,6 +20,8 @@ export default class OrderComponent implements OnInit {
   op = {delete:true,edit:false, show:true};
   datepipe = new DatePipe('en-US');
   orderList: any[] = [];
+  loading:boolean = false;
+  error:string = "";
   orderService = inject(OrderService);
   authService = inject(AuthService);
   constructor() { }
@@ -28,11 +31,20 @@ export default class OrderComponent implements OnInit {
     this.loadData();
   }
   loadData(){
-    this.orderService.getAll().subscribe(res => {
+    this.loading = true;
+    this.orderService.getAll().pipe(
+      catchError(err => {
+        this.loading = false;
+        if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
+        else {
+          this.error = err?.error?.message || 'Error al obtener las compras';
+        }
+        return throwError(() => err);
+      })
+    ).subscribe(res => {
       this.orderList = [];
       res.forEach(e => {
         let items: string = '';
-        console.log(e.order_items);
         e.order_items.forEach((r: {item:{name:string};quantity:number}) => {
           items+=r?.item?.name+" x "+ r.quantity+", ";
         });
@@ -51,6 +63,7 @@ export default class OrderComponent implements OnInit {
           })
         });
       });
+      this.loading = false;
     });
   }
   edit(data: any){

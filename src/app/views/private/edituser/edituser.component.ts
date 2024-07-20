@@ -24,6 +24,7 @@ export default class EdituserComponent implements OnInit {
   userForm!: FormGroup;
   editing: boolean = false;
   error: string = '';
+  sending:boolean = false;
   userData!: any;
   fb = inject(FormBuilder);
   router = inject(Router);
@@ -70,6 +71,7 @@ export default class EdituserComponent implements OnInit {
 
   }
   sendData() {
+    this.sending = true;
     let user: any = {
       firstname: this.userForm.value.firstname,
       lastname: this.userForm.value.lastname,
@@ -82,6 +84,7 @@ export default class EdituserComponent implements OnInit {
     const id: number = 0;
     this.userService.updateProfile(user).pipe(
       catchError(err => {
+        this.sending = false;
         if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
         else {
           this.error = err?.error?.message || 'Error al Editar tu Usuario';
@@ -91,6 +94,7 @@ export default class EdituserComponent implements OnInit {
     ).subscribe(res => {
       this.error = '';
       this.authService.currentUser.set(user);
+      this.sending = false;
       this.router.navigate(['dashboard']);
     });
 

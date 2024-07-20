@@ -5,6 +5,7 @@ import { HeaderComponent } from '../../../components/header/header.component';
 import { ModalComponent } from '../../../components/modal/modal.component';
 import { TableComponent } from '../../../components/table/table.component';
 import { AuthService } from '../../../services/auth/auth.service';
+import { catchError, throwError } from 'rxjs';
 @Component({
   selector: 'app-complaint',
   standalone: true,
@@ -20,6 +21,8 @@ export default class ComplaintComponent {
   complaintList: any[] = [];
   complaintService = inject(ComplaintService);
   authService = inject(AuthService);
+  loading:boolean = false;
+  error:string = '';
   filter:string = 'all';
   @ViewChild('all', { static: false }) allbtn: ElementRef;
   setFilter(filter:string):void{
@@ -31,8 +34,18 @@ export default class ComplaintComponent {
     this.loadData();
   }
   loadData(){
+    this.loading = true;
     this.complaintList= [];
-    this.complaintService.getAllByFiltering(this.filter).subscribe(res => {  
+    this.complaintService.getAllByFiltering(this.filter).pipe(
+      catchError(err => {
+        this.loading = false;
+        if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
+        else {
+          this.error = err?.error?.message || 'Error al obtener las recomendaciones/reclamos';
+        }
+        return throwError(() => err);
+      })
+    ).subscribe(res => {  
       res.forEach(e => {
         this.complaintList.push({
           client: e?.user?.firstname ? `${e?.user?.firstname} ${e?.user?.lastname}`: null,
@@ -48,7 +61,7 @@ export default class ComplaintComponent {
           idd: e.id < 10 ? `#0${e.id}` : `#${e.id}`,
         });
       });
-    
+      this.loading = false;
     });
   }
   edit(data: any){

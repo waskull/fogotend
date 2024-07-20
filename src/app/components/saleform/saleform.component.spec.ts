@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SaleformComponent } from './saleform.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SaleService } from '../../services/sale.service';
 import { UserService } from '../../services/user.service';
 import { InventoryService } from '../../services/inventory.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('SaleformComponent', () => {
   let component: SaleformComponent;
@@ -12,9 +13,9 @@ describe('SaleformComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SaleformComponent, HttpClientTestingModule],
-      providers: [SaleService, UserService, InventoryService]
-    })
+    imports: [SaleformComponent],
+    providers: [SaleService, UserService, InventoryService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(SaleformComponent);

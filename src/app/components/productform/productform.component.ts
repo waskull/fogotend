@@ -18,6 +18,7 @@ export class ProductformComponent implements OnInit {
   @Input() data!: any;
   dataForm!: FormGroup;
   imageURL!: string;
+  sending: boolean = false;
   baseURL = environment.baseURL;
   editing: boolean = false;
   error: string = '';
@@ -62,6 +63,7 @@ export class ProductformComponent implements OnInit {
   }
 
   sendData() {
+    this.sending = true;
     let Data: any = {
       name: this.dataForm.value.name,
       price: parseFloat(this.dataForm.value.price),
@@ -81,6 +83,7 @@ export class ProductformComponent implements OnInit {
       const id: number = this.data?.id;
       this.productService.update(formData, id).pipe(
         catchError(err => {
+          this.sending = false;
           if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
           else {
             this.error = err?.error?.message || 'Error al Editar el producto';
@@ -92,12 +95,14 @@ export class ProductformComponent implements OnInit {
         Data.id = id;
         this.dataForm.reset();
         this.emitForm.emit(Data);
+        this.sending = false;
       });
     }
     else {
       delete Data?.id;
       this.productService.create(formData).pipe(
         catchError(err => {
+          this.sending = false;
           if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
           else {
             this.error = err?.error?.message || 'Error al Crear el producto';
@@ -108,6 +113,7 @@ export class ProductformComponent implements OnInit {
         this.error = '';
         this.dataForm.reset();
         this.emitForm.emit(Data);
+        this.sending = false;
       });
     }
   }

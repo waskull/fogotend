@@ -1,15 +1,15 @@
 <app-header title="Mesas"></app-header>
 
 <main class="py-0 bg-surface-secondary">
-    <div class="container-fluid   pb-4" >
+    <div class="container-fluid   pb-4">
 
 
 
-        <div class="card mt-lg-3 border-0 mb-7">
+        <div class="card shadow-none mt-lg-3 border-0 mb-7">
             <!-- <div class="card-header">
                 <h2>Mesas</h2>
             </div> -->
-            <div class="container-fluid" >
+            <div class="container-fluid">
                 <button class="btn btn-dark btn-sm float-end mt-2 mb-1" (click)="reload()">
                     <div class="icon icon-shape dark text-white text-lg rounded-circle">
                         <i class="fa-solid fa-arrows-rotate"></i>
@@ -18,310 +18,288 @@
 
             </div>
 
-            
+
             <hr>
 
             <div class="form-group mt-2 container-fluid ">
     
                 <div class="input-group input-group-lg">
-                <div class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></div>
-                    <input type="text" class="form-control" name="search" placeholder="Buscar ..." [(ngModel)]="search">
+                <div class="input-group-text">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                    <input type="text" class="form-control" name="search" placeholder="Buscar..." [(ngModel)]="search">
+                    @if (search) {
+                        <button (click)="clean()" class="btn btn-outline-dark border-left-0 border" type="button">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    }
+            
                 </div>
                 
             </div>
 
             @if (loading) {
-                <div class="container  d-flex justify-content-evenly">
-                    <div class="row">
-                @for (item of ['','','']; track $index) {
+            <div class="container  d-flex justify-content-evenly">
+                <div class="row">
+                    @for (item of [0,1,2,3,4,5,6,7]; track $index) {
 
-                    <div class="col" >
-                      
-                    <div class="card" style="width: 18rem; margin-right: 0px;" aria-hidden="true">
-                      <div class="card-header placeholder-glow">
-                          <h5 class="card-title text-center">
-                              <span class="spinner-border"></span>
-                          </h5>
+                    <div class="col">
+
+                        <div class="card shadow-none border-dark-subtle mb-2" style="width: 18rem; margin-right: 0px;" aria-hidden="true">
+                            <div class="card-header placeholder-glow">
+                                <h5 class="card-title text-center">
+                                    <span class="spinner-border"></span>
+                                </h5>
+                            </div>
+                            <!-- <img src="..." class="card-img-top" alt="..."> -->
+                            <div class="card-body">
+
+                                <p class="card-text placeholder-glow">
+                                    <span class="placeholder col-6"></span>
+                                    <span class="placeholder col-4"></span>
+
+                                    <span class="placeholder col-8"></span>
+                                </p>
+                                <a class="btn btn-primary w-100 disabled placeholder col-6" aria-disabled="true"></a>
+                            </div>
                         </div>
-                      <!-- <img src="..." class="card-img-top" alt="..."> -->
-                      <div class="card-body">
-         
-                        <p class="card-text placeholder-glow">
-                          <span class="placeholder col-6"></span>
-                          <span class="placeholder col-4"></span>
-
-                          <span class="placeholder col-8"></span>
-                        </p>
-                        <a class="btn btn-primary w-100 disabled placeholder col-6" aria-disabled="true"></a>
-                      </div>
                     </div>
+                    }
                 </div>
-                }
             </div>
-        </div>
             }
 
             @else {
-                <div class="container d-flex justify-content-evenly">
-                    <div class="row" >
-                        @for (item of tableList  | filter: search; track $index) {
-                            <div class="col" >
-                                <div class="card mb-3" style="width: 18rem; margin-right: 0px;">
-                                    <div class="card-header">
-                                        <h5 class="card-title text-center">{{item.name}}</h5>
-                                      </div>
-                                    
-                                @if (item.capacity === 4) {
-                                    <img src="../../../../assets/images/4.png" class="mx-auto" alt="fogon" width="100"
-                                    height="100">
-                                }
-                                @else {
-                                    <img src="../../../../assets/images/6.png" class="mx-auto" alt="fogon" width="100"
-                                    height="100">
-                                }
-                                <div class="card-body text-center">
-                                    
-                                    <small class="card-text">Tamaño: {{item?.capacity}} personas.</small>
-                                    
-                                </div>
-                                <div class="card-footer text-body-secondary">
-                                    @if (item.available) {
-                                        <a class="btn btn-primary w-100" (click)="open(item.id)" style="font-size: 1rem;">Hacer solicitud</a>
-                                    
-                                            <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" [id]="'modal'+item.id"
-                                                tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-lg">
-                                                    <div class="modal-content text-sm-start">
-                                                        <div class="modal-header">
-                                                            <h3 class="modal-title" id="exampleModalLabel">{{item.name}}</h3>
-                                              
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body text-justify">
-                                                      
-                                                                <ng-container>
-                                                                    <h5 class="mb-3">Datos del pedido en mesa:</h5>
-                                                                    <tablesaleform (emitForm)="edit($event)" [data]="item"></tablesaleform>
-                                                                    <!-- <saleform (emitForm)="edit($event)" [data]="row"></saleform> -->
-                                                                </ng-container>
-                                                                
-                
-                
-                
-                                                      
-                
-                                                    </div>
-                                                </div>
-                                            </div>
-                                  
-                                        </div>
-    
-    
-    
-    
-                                        }
-                                        @else {
-                                        <div class="row">
-                                            @if (!item.available) {
-                                                <div class="col">
-                                                    <a class="btn btn-danger w-100" style="font-size: 1rem;" (click)="confirm(item.id)">Liberar mesa</a>
-                                                </div>
-                                            }
-                                            @if (item.sale) {
-                                                <div class="col">
-                                                    <a class="btn btn-info w-100" style="font-size: 1rem;" (click)="show(item.sale.id)">Ver pedido</a>
-                                                    <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" [id]="item.sale.id"
-                                                tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-lg">
-                                                    <div class="modal-content text-sm-start">
-                                                        <div class="modal-header">
-                                                            <h3 class="modal-title" id="exampleModalLabel">{{item.sale.name}}</h3>
-                                              
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body text-justify">
-                                                      
-                                                                <ng-container>
-                                                                    <h5 class="mb-3">Datos del pedido en: {{item.name}}</h5>
-                                                                    <ol class="list-group ">
-                                                                         @for (i of item.sale.sale_items; track $index) {
-                                                                            <li class="list-group-item  justify-content-between align-items-start">
-                                                                
-                                                                                <div class="row ">
-                                                                                    <div class="fw-bold col-auto me-auto">{{i.item.name}} {{i.item.price}}$</div>
-                                                                                    <!-- <span style="cursor: pointer;" (click)="removeItem(i)" class=" col-auto"><i style="color:red;"
-                                                                                            class="fa-solid fa-xmark"></i></span> -->
-                                                                                </div>
-                                                                    
-                                                                                Stock actual:
-                                                                                @if (i.item.stock === 0) {<span class="text-danger">{{i.item.stock}}, </span>}
-                                                                                @if (i.item.stock > 0 && i.stock<5) {<span class="text-warning">{{i.item.stock}}, </span>}
-                                                                                @if (i.item.stock > 5) {<span class="text-success">{{i.item.stock}}, </span>}
-                                                                                
-                                                                                
-                                                                                
-                                                                    
-                                                                                <!-- <div class="d-flex justify-content-evenly">
-                                                                                    <button class="btn btn-warning" type="button" (click)="minus(i)">-</button>
-                                                                                    <p>{{i.quantity}}</p>
-                                                                                    <button class="btn btn-primary" type="button" (click)="plus(i)">+</button>
-                                                                                </div> -->
-                                                                    
-                                                                    
-                                                                            </li>
-                                                                         }
-                                                                        
-                                                                    </ol>
-
-                                                                    <div class="row mt-2">
-                                                                        <div class="col">
-                                                                            <div class="row">
-                                                                                <p >Metodo de pago: <strong>{{item.sale.paymentMethod}}</strong></p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div class="col">
-                                                                            <div class="row">
-                                                                                <p >Cliente: <strong>{{item.sale.user.lastname}} {{item.sale.user.firstname}}</strong></p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div class="col">
-                                                                            <div class="row">
-                                                                                <p >Total: <strong>{{item.sale.total}}</strong></p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </ng-container>
-                                                                
-                
-                
-                
-                                                      
-                
-                                                    </div>
-                                                </div>
-                                            </div>
-                                  
-                                        </div>
-                                                </div>
-                                            }
-                                        </div>
-                                        }
-                                  </div>
-                                
+            <div class="container d-flex justify-content-evenly">
+                <div class="row">
+                    @for (item of tableList | filter: search; track $index) {
+                    <div class="col">
+                        <div class="card border-dark-subtle shadow rounded mb-3"
+                            style="width: 18rem; margin-right: 0px;">
+                            <div class="card-header">
+                                <h5 class="card-title text-center">{{item.name}}</h5>
                             </div>
-                        </div>
-                        }
-                    </div>
-                    
-                </div>
-            }
 
-            
-
-            <!-- <div class="container d-flex justify-content-evenly">
-                <div class="row ">
-
-
-                    <div class="col-6">
-                        @for (item of tables; track $index) {
-
-                        @if ($index<5) { @if (item.size===4) { <div class="card" style="width: 18rem;">
-                            <img src="../../../../assets/images/4.png" class="mx-auto" alt="fogon" width="100"
-                                height="100">
+                            @if (item.capacity === 4) {
+                            <img src="images/4.png" class="mx-auto" alt="fogon" width="100" height="100">
+                            }
+                            @else {
+                            <img src="images/6.png" class="mx-auto" alt="fogon" width="100" height="100">
+                            }
                             <div class="card-body text-center">
-                                <h5 class="card-title">{{item.name}}</h5>
-                                <p class="card-text">Tamaño: {{item.size}} personas.</p>
+
+                                <small class="card-text">Tamaño: {{item?.capacity}} personas.</small>
+
+                            </div>
+                            <div class="card-footer text-body-secondary">
                                 @if (item.available) {
-                                <a class="btn btn-primary">Hacer solicitud</a>
+                                <a class="btn btn-primary w-100" (click)="open(item.id)" style="font-size: 1rem;">Hacer
+                                    solicitud</a>
+
+                                <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false"
+                                    [id]="'modal'+item.id" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content text-sm-start">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title" id="exampleModalLabel">{{item.name}}</h3>
+
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-justify">
+
+                                                <ng-container>
+                                                    <h5 class="mb-3">Datos del pedido en mesa:</h5>
+                                                    <tablesaleform (emitForm)="edit($event)" [data]="item">
+                                                    </tablesaleform>
+                                                    <!-- <saleform (emitForm)="edit($event)" [data]="row"></saleform> -->
+                                                </ng-container>
+
+
+
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+
+
                                 }
                                 @else {
-                                <a class="btn btn-danger">Liberar mesa</a>
+                                <div class="row">
+                                    @if (!item.available) {
+                                    <div class="col">
+                                        <a class="btn btn-info w-100" style="font-size: 1rem;"
+                                            (click)="confirm(item.id)">Liberar mesa</a>
+                                            <app-dialog (emitData)="release($event)" [id]="item.id" header="¿Deseas liberar la {{item?.name}}?" [row]="item" [isTable]="true"></app-dialog>
+                                    </div>
+                                    }
+                                    @if (item.sale) {
+                                    <div class="col">
+                                        <a class="btn btn-secondary w-100" style="font-size: 1rem;"
+                                            (click)="show(item.sale.id)">Ver pedido</a>
+                                        <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false"
+                                            [id]="item.sale.id" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content text-sm-start">
+                                                    <div class="modal-header">
+                                                        <h3 class="modal-title" id="exampleModalLabel">Datos del pedido
+                                                            en {{item.name}}</h3>
+
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body text-justify">
+
+                                                        <ng-container>
+                                                            <div class="row">
+                                                                <h5 class="mb-3">Productos del pedido:</h5>
+                                                                @for (i of item.sale.sale_items; track $index) {
+
+                                                                <section class="col me-2">
+
+                                                                    <div class="row justify-content-start">
+                                                                        <div class="col list-group-item">
+                                                                            <div
+                                                                                class="card shadow widget-card border-dark-subtle shadow-sm mb-2 ms-2">
+                                                                                <div class="card-body ps-3 pe-3">
+                                                                                    <div class="row">
+                                                                                        <div class="col"
+                                                                                            style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                                                            <h6 style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                                                                                class="card-title widget-card-title mb-2 text-uppercase text-break">
+                                                                                                {{i.item.name}}</h6>
+                                                                                        </div>
+                                                                                        <div class="col-auto">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="row">
+                                                                                        <div class="col-12">
+                                                                                            <div
+                                                                                                class="row align-items-center">
+                                                                                                <div class="col">
+                                                                                                    <div
+                                                                                                        class="d-flex align-items-center">
+                                                                                                        <div>
+                                                                                                            <div
+                                                                                                                class="fs-5 bsb-w-50 bsb-h-50 bg-primary-subtle text-primary rounded-2 d-flex align-items-center justify-content-between me-3">
+                                                                                                                <div>
+                                                                                                                    <img src="{{baseURL}}/{{i.item.image}}"
+                                                                                                                        alt="{{i.item.name}}"
+                                                                                                                        class="square">
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div
+                                                                                                            class="row">
+                                                                                                            <h6>{{i.item.price}}$
+                                                                                                            </h6>
+                                                                                                            @if
+                                                                                                            (i.item.stock
+                                                                                                            === 0) { <p
+                                                                                                                class="text-danger m-0 fs-7">
+                                                                                                                Stock
+                                                                                                                actual:
+                                                                                                                {{i.stock}}
+                                                                                                            </p>}
+                                                                                                            @if
+                                                                                                            (i.item.stock
+                                                                                                            > 0 &&
+                                                                                                            i.item.stock
+                                                                                                            <5) { <p
+                                                                                                                class="text-warning m-0 fs-7">
+                                                                                                                Stock
+                                                                                                                actual:
+                                                                                                                {{i.item.stock}}
+                                                                                                                </p>
+                                                                                                                }
+                                                                                                                @if
+                                                                                                                (i.item.stock>
+                                                                                                                5) {
+                                                                                                                <p
+                                                                                                                    class="text-success m-0 fs-7">
+                                                                                                                    Stock
+                                                                                                                    actual:
+                                                                                                                    {{i.item.stock}}
+                                                                                                                </p>
+                                                                                                                }
+
+
+                                                                                                        </div>
+
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </section>
+
+                                                                }
+                                                            </div>
+
+
+                                                            <div class="row mt-2">
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <p>Metodo de pago:
+                                                                            <strong>{{item.sale.paymentMethod}}</strong>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <p>Aprobado por: <strong>{{item?.sale?.salesman?.firstname}} {{item?.sale?.salesman?.lastname}}</strong></p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <span style="font-size: larger;">TOTAL :
+                                                                            <strong>{{item.sale.total}}$</strong></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ng-container>
+
+
+
+
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    }
+                                </div>
                                 }
                             </div>
-                    </div>
-                    }
-                    @else {
-                    <div class="card" style="width: 18rem;">
-                        <img src="../../../../assets/images/6.png" class="mx-auto" alt="fogon" width="100" height="100">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">{{item.name}}</h5>
-                            <p class="card-text">Tamaño: {{item.size}} personas.</p>
-                            @if (item.available) {
-                            <a class="btn btn-primary mx-auto">Hacer solicitud</a>
-                            }
-                            @else {
-                            <a class="btn btn-danger mx-auto">Liberar mesa</a>
-                            }
+
                         </div>
                     </div>
-
-                    }
-
-
-                    }
-
-
                     }
                 </div>
 
-                <div class="col-6">
-                    @for (item of tables; track $index) {
-
-                    @if ($index>=5) {
-                    @if (item.size === 4) {
-                    <div class="card" style="width: 18rem;">
-                        <img src="../../../../assets/images/4.png" class="mx-auto" alt="fogon" width="100" height="100">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">{{item.name}}</h5>
-                            <p class="card-text">Tamaño: {{item.size}} personas.</p>
-                            @if (item.available) {
-                            <a class="btn btn-primary mx-auto">Hacer solicitud</a>
-                            }
-                            @else {
-                            <a class="btn btn-danger mx-auto">Liberar mesa</a>
-                            }
-                        </div>
-                    </div>
-                    }
-                    @else {
-                    <div class="card" style="width: 18rem;">
-                        <img src="../../../../assets/images/6.png" class="mx-auto" alt="fogon" width="100" height="100">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">{{item.name}}</h5>
-                            <p class="card-text">Tamaño: {{item.size}} personas.</p>
-                            @if (item.available) {
-                            <a class="btn btn-primary mx-auto">Hacer solicitud</a>
-                            }
-                            @else {
-                            <a class="btn btn-danger mx-auto">Liberar mesa</a>
-                            }
-                        </div>
-                    </div>
-
-                    }
-
-
-                    }
-
-                    }
-
-                </div>
             </div>
-
-
-        </div> -->
-
-        <!-- <app-table [colNames]="columnNames" [columns]="columns" [report]="true" [rowData]="saleList"
-                [saleModal]="true" [operations]="op" (onEdit)="edit($event)" (onCancel)="cancel($event)"
-                (onConfirm)="confirm($event)" (onDelete)="delete($event)"></app-table> -->
-
-    </div>
+            }
+        </div>
     </div>
 
 

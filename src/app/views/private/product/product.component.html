@@ -4,10 +4,18 @@
     <div class="container-fluid   pb-4">
        
 
-        <div class="card mt-lg-3 border-0 mb-7">
+        <div class="card shadow-none mt-lg-3 border-0 mb-7">
             <app-modal [productForm]="true" modalId="modal" buttonName="Nuevo producto" (emitData)="newValue($event)" class="col text-sm-end  ms-2"></app-modal>
-            <app-table [colNames]="columnNames" [columns]="columns" [productModal]="true" [rowData]="itemList" [operations]="op" (onEdit)="edit($event)" (onDelete)="delete($event)"></app-table>
-
+            
+            @if (loading) {
+                <div class="spinner-grow text-dark text-center container mt-2 mb-2" style="width: 5rem; height: 5rem;" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                  </div>
+                  <span class="text-dark text-center  mb-4">Cargando...</span>
+            }
+            @else {
+                <app-table [colNames]="columnNames" [columns]="columns" [productModal]="true" [rowData]="itemList" [operations]="op" (onEdit)="edit($event)" (onDelete)="delete($event)"></app-table>
+            }
         </div>
     </div>
 

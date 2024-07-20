@@ -1,13 +1,15 @@
 <form (ngSubmit)="sendData()" [formGroup]="dataForm">
     <div class="row">
         <div class="mb-3 form-floating form-group col">
-            <label for="item" class="col-form-label py-1 px-4">Selecciona un artículo:</label>
-            <select class="form-select" #selectList (change)="addItem(selectList.value)"
-                aria-label="Seleccion de artículo" name="item" id="item" formControlName="item">
-                <option selected value="">Selecciona un artículo</option>
-                <option *ngFor="let item of inventoryList" value="{{ item | json }}">
-                    {{item.name}} {{item.price}}$</option>
-            </select>
+            <span class="">Seleccione un producto:</span>
+            <ng-select class="custom" formControlName="item" placeholder="Selecciona el producto" [clearable]="false"
+                [closeOnSelect]="true" [searchable]="true" (change)="add($event)" [clearSearchOnAdd]="true"
+                notFoundText="Producto no encontrado">
+                @for (item of inventoryList; track item.id) {
+                <ng-option [value]="item.id"><img src="{{baseURL}}/{{item.image}}" width="20px" height="20px" />
+                    {{item.name}} {{item.price}}$</ng-option>
+                }
+            </ng-select>
             <div *ngIf="dataForm.get('item')?.touched && dataForm.get('item')?.errors?.['required']"
                 class="alert mt-3 alert-danger">El artículo es requerido.</div>
         </div>
@@ -21,7 +23,7 @@
                 La cantidad debe de ser mayor o igual a 0.</div>
         </div> -->
     </div>
-    
+
     <div class="row">
         @for (i of selectedItems; track $index) {
 
@@ -29,19 +31,21 @@
 
             <div class="row justify-content-start">
                 <div class="col list-group-item">
-                    <div class="card widget-card border-light shadow-sm mb-2 ms-2">
-                        <div class="card-body p-4">
+                    <div class="card widget-card border-dark-subtle shadow-sm mb-2 ms-2">
+                        <div class="card-body ps-3 pe-3">
                             <div class="row">
-                                <div class="col" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                    <h5 style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="card-title widget-card-title mb-4 text-uppercase text-break">
-                                        {{i.name}}</h5>
+                                <div class="col"
+                                    style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                    <h6 style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                        class="card-title widget-card-title mb-2 text-uppercase text-break">
+                                        {{i.name}}</h6>
                                 </div>
                                 <div class="col-auto">
                                     <p style="cursor: pointer;" (click)="removeItem(i)"
                                         class=" badge bg-danger rounded-pill"><i class="fa-solid fa-xmark "></i></p>
                                 </div>
                             </div>
-                            <div class="row gy-4">
+                            <div class="row">
                                 <div class="col-12">
                                     <div class="row align-items-center">
                                         <div class="col">
@@ -57,12 +61,12 @@
                                                 </div>
                                                 <div class="row">
                                                     <h6>{{i.price}}$</h6>
-                                                    <p *ngIf="i.stock === 0" class="text-danger m-0 fs-7">Stock
-                                                        actual: {{i.stock}}</p>
-                                                    <p *ngIf="i.stock > 0 && i.stock<5"
-                                                        class="text-warning m-0 fs-7">Stock actual: {{i.stock}}</p>
-                                                    <p *ngIf="i.stock > 5" class="text-success m-0 fs-7">Stock
-                                                        actual: {{i.stock}}</p>
+                                                    @if (i.stock === 0) {<p class="text-danger m-0 fs-7">Stock
+                                                        actual: {{i.stock}}</p>}
+                                                    @if (i.stock > 0 && i.stock<5) { <p class="text-warning m-0 fs-7">
+                                                        Stock actual: {{i.stock}}</p>}
+                                                        @if (i.stock > 5) {<p class="text-success m-0 fs-7">Stock
+                                                            actual: {{i.stock}}</p>}
                                                 </div>
 
                                             </div>
@@ -73,7 +77,7 @@
 
 
 
-                                        <div class="row d-flex justify-content-between text-center mt-4">
+                                        <div class="row d-flex justify-content-between text-center mt-1">
                                             <div class="col">
                                                 <button class="btn btn-warning" type="button"
                                                     (click)="minus(i)">-</button>
@@ -102,10 +106,30 @@
         }
     </div>
 
+    <!-- <div class="mb-3 form-floating form-group col mt-0">
+        <span class="">Selecciona un cliente:</span>
+            <div class=" col mt-1">
+                <ng-select 
+                class="custom"
+                formControlName="client" 
+                placeholder="Selecciona el cliente"
+                [clearable]="false" 
+                [closeOnSelect]="true" 
+                [searchable]="true" 
+                [clearSearchOnAdd]="true"
+                notFoundText="cliente no encontrado">
+                    @for (client of clientList; track client.id) {
+                        <ng-option [value]="client.id">{{client.firstname}} {{client.lastname}}</ng-option>
+                    }
+                </ng-select>
+            </div>
+        <div *ngIf="dataForm.get('client')?.touched && dataForm.get('client')?.errors?.['required']"
+            class="alert mt-3 alert-danger">El cliente es requerido.</div>
+    </div> -->
 
     <div class="row mt-3">
-        <div class="mb-3 form-floating form-group col">
-            <div class="mb-3 form-floating form-group col">
+        <div class="mb-1 form-floating form-group col">
+            <div class="mb-2 form-floating form-group col">
                 <label for="paymentMethod" class="col-form-label py-1">Método de pago:</label>
                 <select class="form-select" (change)="clearCode()" aria-label="Seleccion de Rol" name="paymentMethod"
                     id="paymentMethod" formControlName="paymentMethod">
@@ -119,7 +143,7 @@
             </div>
         </div>
         @if (dataForm.value.paymentMethod !== methods.Cash || "") {
-        <div class="mb-3 form-floating form-group col">
+        <div class="mb-1 form-floating form-group col">
             <label for="pay_code" class="col-form-label py-1  px-4"
                 aria-placeholder="Ultimos 4 digitos del codigo de referencia">Código de referencia (últimos 4
                 digitos):</label>
@@ -133,12 +157,32 @@
         </div>
         }
     </div>
+    <div class="row mb-1">
+        @if (dataForm.get('paymentMethod').value === methods.Mobile) {
 
+        <div class="col">
+            <img src="images/banesco.png" alt="banesco" data-toggle="tooltip" data-placement="right" title="0134">
+            <br>
+            Cedúla: <strong>24567132</strong>
+            <br>
+            Telefono: <strong>04124325912 </strong>
+        </div>
+        }
+        @if (dataForm.get('paymentMethod').value === methods.Transfer) {
+        <div class="row mb-1">
+            <div class="col">
+                <img src="images/banesco.png" alt="banesco" data-toggle="tooltip" data-placement="right" title="0134">
+                <br>
+                Cuenta: <strong>01349573238000098326</strong>
+            </div>
+        </div>
+        }
+    </div>
     @if (selectedItems.length>0) {
     <div class="row">
         <div class="mb-3 mt-1 form-floating form-group col">
-            <label for="subtotal" class="col-form-label py-1 px-4">Subtotal:</label>
-            <input type="number" class="form-control" [value]="total.toFixed(2)" id="subtotal" disabled>
+            <label for="total" class="col-form-label py-1 px-4">Total:</label>
+            <input type="text" class="form-control" style="font-weight: bold;" [value]="total.toFixed(2)+'$'" id="total" disabled>
         </div>
         <!-- <div class="mb-3 mt-1 form-floating form-group col">
                 @if (total>=60) {
@@ -165,8 +209,15 @@
         </button>
 
         <button type="button" class="btn btn-primary" type="submit"
-            [disabled]="dataForm.invalid || selectedItems.length < 1">
-            Asignar mesa
+            [disabled]="dataForm.invalid || selectedItems.length < 1 || sending">
+            @if (sending) {
+            <span role="status">Asignando mesa...</span>
+            <span class="spinner-border spinner-border-sm ms-1" aria-hidden="true"></span>
+            }
+            @else {
+
+            <span role="status">Asignar mesa</span>
+            }
         </button>
     </div>
 </form>

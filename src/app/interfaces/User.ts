@@ -26,6 +26,21 @@ export interface IUser{
     createdAt?:Date;
 }
 
+export interface IIUser{
+    email?: string;
+    password?: string;
+    firstname?: string;
+    lastname?: string;
+    roles?: string[];
+    birthdate?: Date;
+    active?: boolean;
+    id?: number;
+    gender?:string;
+    dni?: string;
+    phone?: string;
+    createdAt?:Date;
+}
+
 export interface IRegisterUser{
     email?: string;
     password?: string;

@@ -1,5 +1,5 @@
 <ng-container>
-    @if (getRol() !== 'repartidor') {
+    @if (getRol() !== DELIVERY_MAN) {
         <button type="button" (click)="openFormModal()" class="btn btn-primary me-2 mt-2">
             {{buttonName}} <i class="fa fa-solid fa-plus"></i>
         </button>
@@ -11,8 +11,41 @@
         aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content text-sm-start">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLabel">Crear</h3>
+                <div class="modal-header border-1">
+                    <h3 class="modal-title" id="exampleModalLabel">
+                        @if (userForm) {
+                            REGISTRAR NUEVO EMPLEADO
+                            }
+                            @if (clientForm) {
+                            REGISTRAR NUEVO CLIENTE
+                            }
+        
+                            @if (productForm) {
+                            <ng-container>
+                                REGISTRAR NUEVO PRODUCTO
+                            </ng-container>
+                            }
+                            @if (saleForm) {
+                            <ng-container>
+                                REGISTRAR PEDIDO 
+                            </ng-container>
+                            }
+                            @if (orderForm) {
+                            <ng-container>
+                                REGISTRAR COMPRA 
+                            </ng-container>
+                            }
+                            @if (complaintForm) {
+                                <ng-container>
+                                    REGISTRAR NUEV&#64; RECOMENDACIÓN/RECLAMO
+                                </ng-container>
+                                }
+                                @if (tablesForm) {
+                                    <ng-container>
+                                        ASIGNAR MESA
+                                    </ng-container>
+                                    }
+                    </h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-justify">

@@ -1,24 +1,27 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject, input } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { catchError, throwError } from 'rxjs';
 import { SaleService } from '../../services/sale.service';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
-import { Method } from '../../constants/Enum';
+import { Method, Rol } from '../../constants/Enum';
 import { OnlynumbersDirective } from '../../onlynumbers.directive';
 import { ProductService } from '../../services/product.service';
 import { ClientService } from '../../services/client.service';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../services/auth/auth.service';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { Clipboard, ClipboardModule } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'saleform',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, OnlynumbersDirective],
+  imports: [CommonModule, ReactiveFormsModule, OnlynumbersDirective, NgSelectModule],
   templateUrl: './saleform.component.html',
   styleUrl: './saleform.component.scss'
 })
 export class SaleformComponent implements OnInit {
+  constructor(private clipboard: Clipboard) {}
   @Output() emitForm = new EventEmitter<any>();
   @Input() data!: any;
   methods = Method;
@@ -26,6 +29,7 @@ export class SaleformComponent implements OnInit {
   baseURL:string = environment.baseURL;
   editing: boolean = false;
   error: string = '';
+  sending: boolean = false;
   clientList: any[] = [];
   inventoryList: any[] = [];
   deliveryList: any[] = [];
@@ -33,22 +37,36 @@ export class SaleformComponent implements OnInit {
   total: number = 0;
   subtotal:number = 0;
   userService = inject(UserService);
+  CASH = Method.Cash
   fb = inject(FormBuilder);
+  
   productService = inject(ProductService);
   salesService = inject(SaleService);
   clientService = inject(ClientService);
-
+  CLIENT = Rol.CLIENT;
   authService = inject(AuthService);
   
-  getRol(){
-    return this.authService.currentUser()?.roles[0];
+  getRol():string{
+    return this.authService?.currentUser()?.roles[0];
   }
-
-  constructor() { }
 
   ngOnInit(): void {
     this.dataForm = this.initForm();
     this.loadFormData();
+  }
+
+  add(i:any){
+    let item = this.inventoryList.find(x => x.id === i)
+    let t = false;
+    this.selectedItems.forEach(e => {
+      if (e.id === item.id) t = true;
+    });
+    if (!t) {
+      item.quantity = 1;
+      this.selectedItems.push(item);
+      this.calculateTotal();
+    }
+    this.dataForm.patchValue({ quantity: 1 });
   }
 
   addItem(item: any) {
@@ -132,13 +150,12 @@ export class SaleformComponent implements OnInit {
   }
   initForm(): FormGroup {
     const d = this.fb.group({
-      client: this.getRol() === 'cliente' ? [0, [Validators.min(0)]] : [0, [Validators.required, Validators.min(1)]],
-     // delivery_man: [0, [Validators.required, Validators.min(1)]],
-      item: [0, [Validators.required, Validators.min(1)]],
-      pay_code: ['', [Validators.minLength(1), Validators.maxLength(4)]],
+      client: [undefined,[Validators.min(1)]],
+      item: [undefined, [Validators.required, Validators.min(1)]],
+      pay_code: ["", [Validators.minLength(1), Validators.maxLength(4)]],
       quantity: [1, [Validators.required, Validators.min(1)]],
-      address: ['', [Validators.required, Validators.minLength(2)]],
-      paymentMethod: ['', [Validators.required, Validators.minLength(2)]],
+      address: ["", [Validators.required, Validators.minLength(2)]],
+      paymentMethod: ["", [Validators.required, Validators.minLength(5)]],
     });
     if (this.data) {
       this.editing = true;
@@ -150,6 +167,13 @@ export class SaleformComponent implements OnInit {
     this.dataForm.patchValue({pay_code:''});
   }
   sendData() {
+    this.sending = true;
+    this.error = "";
+    if(this.dataForm.value.pay_code.length < 1 && this.dataForm.value.paymentMethod !== this.methods.Cash){
+      this.error = "Debes proveer una referencia de pago";
+      this.sending = false;
+      return;
+    }
     let tmpList: any[] = [];
     this.selectedItems.forEach(e => {
       tmpList.push({
@@ -163,14 +187,15 @@ export class SaleformComponent implements OnInit {
       paymentMethod: this.dataForm.value.paymentMethod,
       pay_code: this.dataForm.value.paymentMethod  === this.methods.Cash ? [] : [this.dataForm.value.pay_code],
       address: this.dataForm.value.address,
-      user: this.getRol() !== 'cliente' ? parseInt(this.dataForm.value.client) : undefined,
+      user: this.getRol() !== this.CLIENT ? parseInt(this.dataForm.value.client) : undefined,
     };
     
     this.salesService.create(Data).pipe(
       catchError(err => {
+        this.sending = false;
         if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
         else {
-          this.error = err?.error?.message || 'Error al Crear la venta';
+          this.error = err?.error?.message || 'Error al crear el pedido';
         }
         return throwError(() => err);
       })
@@ -181,6 +206,7 @@ export class SaleformComponent implements OnInit {
       this.emitForm.emit(Data);
       this.dataForm.reset();
       this.selectedItems = [];
+      this.sending = false;
     });
 
   }

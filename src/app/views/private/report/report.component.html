@@ -52,7 +52,18 @@
                       </div>
                   </div>
                     </div>
-                <button class="mt-5 btn btn-primary w-100" (click)="getRows()" [disabled]="!start || !end" type="button">Generar Reportes de {{buttonText}}</button>
+                    @if (error) {
+                      <span class="text-danger px-1">{{error}}</span>
+                    }
+                <button class="mt-5 btn btn-primary w-100" (click)="getRows()" [disabled]="!start || !end || sending" type="button">
+                  @if (sending) {
+                    <span class="spinner-border spinner-border-sm ms-1" aria-hidden="true"></span>
+                    <span role="status">Generando reporte...</span>
+                  }
+                  @else {
+                    <span role="status">Generar reporte de {{buttonText}}</span>
+                  }
+                </button>
         </div>
     </div>
 </div>

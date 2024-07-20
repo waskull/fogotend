@@ -28,8 +28,9 @@
         <div *ngIf="dataForm.get('price')?.touched && dataForm.get('price')?.errors?.['required']"
           class="alert mt-3 alert-danger">El precio es requerido.</div>
         <div *ngIf="dataForm.get('price')?.touched && dataForm.get('price')?.errors?.['min']"
-          class="alert mt-3 alert-danger">El precio debe de tener mínimo
-          {{dataForm.get('price')?.errors?.['min'].requiredLength}} caracteres.</div>
+          class="alert mt-3 alert-danger">El precio debe de ser minimo 0.1
+          </div>
+          <!-- {{dataForm.get('price')?.errors?.['min'].requiredLength}} -->
       </div>
       <!-- <div class="mb-3 form-floating form-group col">
         <label for="wholesale_price" class="col-form-label py-1  px-4">Precio al mayor:</label>
@@ -61,13 +62,25 @@
         Cerrar
       </button>
       <ng-container *ngIf="data; else elseTemplate">
-        <button type="button" class="btn btn-primary" type="submit" [disabled]="dataForm.invalid">
-          Editar
+        <button type="button" class="btn btn-primary" type="submit" [disabled]="dataForm.invalid || sending">
+          @if (sending) {
+            <span class="spinner-border spinner-border-sm ms-1" aria-hidden="true"></span>
+            <span role="status">Editando producto...</span>
+          }
+          @else {
+            <span role="status">Editar producto</span>
+          }
         </button>
       </ng-container>
       <ng-template #elseTemplate>
-        <button type="button" class="btn btn-primary" type="submit" [disabled]="dataForm.invalid">
-          Crear
+        <button type="button" class="btn btn-primary" type="submit" [disabled]="dataForm.invalid || sending">
+          @if (sending) {
+            <span class="spinner-border spinner-border-sm ms-1" aria-hidden="true"></span>
+            <span role="status">Registrando producto...</span>
+          }
+          @else {
+            <span role="status">Registrar producto</span>
+          }
         </button>
       </ng-template>
       

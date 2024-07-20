@@ -42,3 +42,8 @@ export enum ComplaintStatus {
     PENDING = "Reclamo pendiente",
     WAITING = "Reclamo en revisión"
 }
+
+export enum ErrorStatus{
+    NO_NETWORK = "NetworkError when attempting to fetch resource.",
+    NO_FETCH = "Failed to fetch"
+}

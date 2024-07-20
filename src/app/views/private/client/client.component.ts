@@ -7,6 +7,7 @@ import { ModalComponent } from '../../../components/modal/modal.component';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth.service';
+import { catchError, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-client',
@@ -19,6 +20,8 @@ export default class ClientComponent {
   userService = inject(ClientService);
   authService = inject(AuthService);
   router = inject(Router);
+  loading:boolean = false;
+  error:string = "";
   userData: any[] = [];
   datepipe = new DatePipe('en-US');
   ngOnInit() {
@@ -38,13 +41,24 @@ export default class ClientComponent {
 }
 
   loadData() {
-    this.userService.getAll().subscribe((res) => {
+    this.loading = true;
+    this.userService.getAll().pipe(
+      catchError(err => {
+        this.loading = false;
+        if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
+        else {
+          this.error = err?.error?.message || 'Error al obtener las recomendaciones/reclamos';
+        }
+        return throwError(() => err);
+      })
+    ).subscribe((res) => {
       
       res.forEach((u) => {
         u.idd = u.id < 10 ? `#0${u.id}` : `#${u.id}`;
         u.age = `${u.birthdate} (${this.calculateAge(u.birthdate)} años)`
       });
       this.userData = res;
+      this.loading = false;
     });
 
   }

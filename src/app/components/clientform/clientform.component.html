@@ -86,13 +86,25 @@
             Cerrar
         </button>
         @if (userData) {
-        <button type="button" class="btn btn-primary" type="submit" [disabled]="userForm.invalid">
-            Editar
+        <button type="button" class="btn btn-primary" type="submit" [disabled]="userForm.invalid || sending">
+            @if (sending) {
+                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                <span role="status">Editando cliente...</span>
+              }
+              @else {
+                <span role="status">Editar cliente</span>
+              }
         </button>
         }
         @else {
-        <button type="button" class="btn btn-primary" type="submit" [disabled]="userForm.invalid">
-            Crear
+        <button type="button" class="btn btn-primary" type="submit" [disabled]="userForm.invalid || sending">
+            @if (sending) {
+                <span class="spinner-border spinner-border-sm ms-1" aria-hidden="true"></span>
+                <span role="status">Registrando cliente...</span>
+              }
+              @else {
+                <span role="status">Registrar cliente</span>
+              }
         </button>
         }
 

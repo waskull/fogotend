@@ -9,6 +9,7 @@ import 'dayjs/locale/es-mx';
 import { validateTypeDate } from '../../validators/dateValidator';
 import { OnlynumbersDirective } from '../../onlynumbers.directive';
 import { Rol } from '../../constants/Enum';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'userform',
@@ -19,12 +20,15 @@ import { Rol } from '../../constants/Enum';
 })
 export class UserformComponent implements OnInit {
   userService = inject(UserService);
+  Roles = [Rol.ADMIN, Rol.CASHIER, Rol.DELIVERY_MAN];
+  authService = inject(AuthService);
   RolENUM = Rol;
   fb = inject(FormBuilder);
   @Output() emitForm = new EventEmitter<any>();
   @Output() editUser = new EventEmitter<any>();
   @Input() userData!: any;
   userForm!: FormGroup;
+  sending: boolean = false;
   editing: boolean = false;
   error: string = '';
   ngOnInit(): void {
@@ -58,6 +62,7 @@ export class UserformComponent implements OnInit {
     return d;
   }
   sendData() {
+    this.error = '';
     let user: User = {
       firstname: this.userForm.value.firstname,
       lastname: this.userForm.value.lastname,
@@ -72,20 +77,23 @@ export class UserformComponent implements OnInit {
       ]
     };
 
+    this.sending = true;
     if (this.userData) {
+      if(this.getRol() === this.RolENUM.MANAGER && this.userData?.roles[0] === this.RolENUM.MANAGER){this.sending = false;this.error = "No puedes degradar a un gerente siendo gerente, solo el administrador puede.";return;}
       const id: number = this.userData?.id;
       this.userService.update(user, this.userData?.id).pipe(
         catchError(err => {
+          this.sending = false;
           if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
           else {
-            this.error = err?.error?.message || 'Error al Editar el Usuario';
+            this.error = err?.error?.message || 'Error al editar el empleado';
           }
           return throwError(() => err);
         })
       ).subscribe(res => {
-        console.log(res.data);
         this.error = '';
         user.id = id;
+        this.sending = false;
         user.email = this.userForm.value.email;
         this.editUser.emit(user);
       });
@@ -94,9 +102,10 @@ export class UserformComponent implements OnInit {
       delete user?.id;
       this.userService.create(user).pipe(
         catchError(err => {
+          this.sending = false;
           if (Array.isArray(err?.error?.message)) { this.error = err?.error?.message[0] }
           else {
-            this.error = err?.error?.message || 'Error al Crear el Usuario';
+            this.error = err?.error?.message || 'Error al registrar el empleado';
           }
           return throwError(() => err);
         })
@@ -104,10 +113,14 @@ export class UserformComponent implements OnInit {
         const { password, ...newUser } = res.data;
         console.log(res); console.log(newUser);
         this.error = '';
+        this.sending = false;
         this.userForm.reset();
         this.userForm.patchValue({gender: 'Femenino', roles:this.RolENUM.CASHIER});
         this.emitForm.emit(newUser);
       });
     }
+  }
+  getRol() {
+    return this.authService.currentUser()?.roles[0];
   }
 }
